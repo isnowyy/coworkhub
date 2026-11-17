@@ -23,10 +23,14 @@ import com.coworkhub.presentacion.dto.RespuestaMiembro;
 import com.coworkhub.presentacion.dto.SolicitudActualizarMiembro;
 import com.coworkhub.presentacion.dto.SolicitudMiembro;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/miembros")
+@Tag(name = "Miembros", description = "Clientes del coworking con su plan y su cuenta. Los gestionan ADMIN y RECEPTIONIST; un MEMBER solo ve su ficha y su consumo.")
 public class ControladorMiembros {
 
     private final ServicioMiembros servicio;
@@ -38,44 +42,54 @@ public class ControladorMiembros {
     }
 
     @GetMapping
-    public List<RespuestaMiembro> listar(@RequestParam(required = false) String nombre,
-                                         @RequestParam(required = false) MemberStatus estado) {
+    @Operation(summary = "Listar miembros", description = "RF-02. ADMIN y RECEPTIONIST. Filtros opcionales por nombre (contiene) y estado.")
+    public List<RespuestaMiembro> listar(
+            @Parameter(description = "Parte del nombre", example = "gómez") @RequestParam(required = false) String nombre,
+            @Parameter(description = "Estado", example = "SUSPENDED") @RequestParam(required = false) MemberStatus estado) {
         return servicio.listar(nombre, estado).stream().map(RespuestaMiembro::desde).toList();
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Consultar un miembro", description = "RF-02. ADMIN y RECEPTIONIST; un MEMBER solo el suyo.")
     public RespuestaMiembro buscar(@PathVariable Long id) {
         return RespuestaMiembro.desde(servicio.buscar(id));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Registrar un miembro y su cuenta", description = "RF-02. ADMIN y RECEPTIONIST. Crea el miembro (ACTIVE) y su cuenta con rol MEMBER. Documento, email y usuario únicos (RN-11).")
     public RespuestaMiembro crear(@Valid @RequestBody SolicitudMiembro solicitud) {
         return RespuestaMiembro.desde(servicio.crear(solicitud));
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "Actualizar nombre, email y plan", description = "RF-02. ADMIN y RECEPTIONIST.")
     public RespuestaMiembro actualizar(@PathVariable Long id, @Valid @RequestBody SolicitudActualizarMiembro solicitud) {
         return RespuestaMiembro.desde(servicio.actualizar(id, solicitud));
     }
 
     @PatchMapping("/{id}/suspender")
+    @Operation(summary = "Suspender un miembro", description = "RF-02. ADMIN y RECEPTIONIST. Un miembro suspendido no puede reservar (RN-05).")
     public RespuestaMiembro suspender(@PathVariable Long id) {
         return RespuestaMiembro.desde(servicio.suspender(id));
     }
 
     @PatchMapping("/{id}/activar")
+    @Operation(summary = "Reactivar un miembro", description = "RF-02. ADMIN y RECEPTIONIST.")
     public RespuestaMiembro activar(@PathVariable Long id) {
         return RespuestaMiembro.desde(servicio.activar(id));
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Eliminar un miembro", description = "RF-02. ADMIN y RECEPTIONIST. No se elimina si tiene reservas (RN-12). Responde 200 sin cuerpo.")
     public void eliminar(@PathVariable Long id) {
         servicio.eliminar(id);
     }
 
     @GetMapping("/{id}/consumo")
-    public RespuestaConsumo consumo(@PathVariable Long id, @RequestParam(required = false) String mes) {
+    @Operation(summary = "Consumo mensual de horas", description = "RF-10. ADMIN y RECEPTIONIST; un MEMBER solo el suyo. Horas incluidas, usadas, restantes y excedentes.")
+    public RespuestaConsumo consumo(@PathVariable Long id,
+                                    @Parameter(description = "Mes yyyy-MM (por defecto, el actual)", example = "2026-11") @RequestParam(required = false) String mes) {
         return RespuestaConsumo.desde(servicioConsumo.consultar(id, mes));
     }
 }

@@ -1,0 +1,4858 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "CoWorkHub API",
+    "description": "API REST de reservas para una red de coworking: sedes, salas, planes, miembros, disponibilidad y reservas con sus reglas de negocio (RN-01 a RN-13).\n\n**C\u00f3mo probarla:** ejecuta `POST /auth/login` con un usuario de prueba (`admin`/`admin123`, `recepcion`/`recep123`, `ana`/`ana123`, `luis`/`luis123`), copia el `token` y p\u00e9galo en el bot\u00f3n **Authorize**.\n\nTodo error responde `{\"error\", \"codigo\", \"timestamp\"}`, donde `codigo` es la regla violada (RN-01\u2026) o el tipo de error.",
+    "contact": {
+      "name": "Proyecto final Spring Boot R2"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080",
+      "description": "Generated server url"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Equipamientos",
+      "description": "Equipamiento que se asigna a las salas. Lectura: cualquier usuario autenticado. Escritura: solo ADMIN."
+    },
+    {
+      "name": "Miembros",
+      "description": "Clientes del coworking con su plan y su cuenta. Los gestionan ADMIN y RECEPTIONIST; un MEMBER solo ve su ficha y su consumo."
+    },
+    {
+      "name": "Salas",
+      "description": "Salas de cada sede con su equipamiento. El nombre es \u00fanico dentro de la sede. Lectura: cualquier usuario autenticado. Escritura: solo ADMIN."
+    },
+    {
+      "name": "Servicios adicionales",
+      "description": "Servicios que se suman a una reserva. Cambiar el precio no altera reservas existentes. Lectura: cualquier usuario autenticado. Escritura: solo ADMIN."
+    },
+    {
+      "name": "Reservas",
+      "description": "Reservas con sus servicios, costos y estados (RN-01 a RN-10). Un MEMBER solo opera las suyas."
+    },
+    {
+      "name": "Disponibilidad",
+      "description": "Salas libres para reservar."
+    },
+    {
+      "name": "Sedes",
+      "description": "Sedes del coworking con su horario. Lectura: cualquier usuario autenticado. Escritura: solo ADMIN."
+    },
+    {
+      "name": "Planes",
+      "description": "Planes de membres\u00eda: horas incluidas, descuento en excedentes y m\u00e1ximo de reservas activas. Lectura: cualquier usuario autenticado. Escritura: solo ADMIN."
+    }
+  ],
+  "paths": {
+    "/api/servicios-adicionales/{id}": {
+      "get": {
+        "tags": [
+          "Servicios adicionales"
+        ],
+        "summary": "Consultar un servicio adicional",
+        "description": "RF-01. Cualquier usuario autenticado.",
+        "operationId": "buscar",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaServicioAdicional"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos faltantes o con formato inv\u00e1lido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "nombre: El nombre es obligatorio",
+                  "codigo": "VALIDACION"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sin token, o con un token alterado o vencido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "codigo": "NO_AUTENTICADO"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "El usuario no tiene permiso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "No tienes permiso para esta operaci\u00f3n",
+                  "codigo": "ACCESO_DENEGADO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "El recurso no existe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Reserva con id 99 no existe",
+                  "codigo": "NO_ENCONTRADO"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Servicios adicionales"
+        ],
+        "summary": "Actualizar un servicio adicional",
+        "description": "RF-01. Solo ADMIN. Nombre \u00fanico (RN-11).",
+        "operationId": "actualizar",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SolicitudServicioAdicional"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaServicioAdicional"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos faltantes o con formato inv\u00e1lido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "nombre: El nombre es obligatorio",
+                  "codigo": "VALIDACION"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sin token, o con un token alterado o vencido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "codigo": "NO_AUTENTICADO"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "El usuario no tiene permiso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "No tienes permiso para esta operaci\u00f3n",
+                  "codigo": "ACCESO_DENEGADO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "El recurso no existe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Reserva con id 99 no existe",
+                  "codigo": "NO_ENCONTRADO"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Se viola una regla de negocio o hay un duplicado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "La sala ya est\u00e1 reservada en ese horario",
+                  "codigo": "RN-01"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Servicios adicionales"
+        ],
+        "summary": "Eliminar un servicio adicional",
+        "description": "RF-01. Solo ADMIN. No se elimina si est\u00e1 en uso (RN-12). Responde 200 sin cuerpo.",
+        "operationId": "eliminar",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Datos faltantes o con formato inv\u00e1lido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "nombre: El nombre es obligatorio",
+                  "codigo": "VALIDACION"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sin token, o con un token alterado o vencido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "codigo": "NO_AUTENTICADO"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "El usuario no tiene permiso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "No tienes permiso para esta operaci\u00f3n",
+                  "codigo": "ACCESO_DENEGADO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "El recurso no existe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Reserva con id 99 no existe",
+                  "codigo": "NO_ENCONTRADO"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Se viola una regla de negocio o hay un duplicado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "La sala ya est\u00e1 reservada en ese horario",
+                  "codigo": "RN-01"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/sedes/{id}": {
+      "get": {
+        "tags": [
+          "Sedes"
+        ],
+        "summary": "Consultar una sede",
+        "description": "RF-01. Cualquier usuario autenticado.",
+        "operationId": "buscar_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaSede"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos faltantes o con formato inv\u00e1lido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "nombre: El nombre es obligatorio",
+                  "codigo": "VALIDACION"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sin token, o con un token alterado o vencido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "codigo": "NO_AUTENTICADO"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "El usuario no tiene permiso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "No tienes permiso para esta operaci\u00f3n",
+                  "codigo": "ACCESO_DENEGADO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "El recurso no existe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Reserva con id 99 no existe",
+                  "codigo": "NO_ENCONTRADO"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Sedes"
+        ],
+        "summary": "Actualizar una sede",
+        "description": "RF-01. Solo ADMIN. Nombre \u00fanico (RN-11).",
+        "operationId": "actualizar_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SolicitudSede"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaSede"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos faltantes o con formato inv\u00e1lido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "nombre: El nombre es obligatorio",
+                  "codigo": "VALIDACION"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sin token, o con un token alterado o vencido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "codigo": "NO_AUTENTICADO"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "El usuario no tiene permiso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "No tienes permiso para esta operaci\u00f3n",
+                  "codigo": "ACCESO_DENEGADO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "El recurso no existe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Reserva con id 99 no existe",
+                  "codigo": "NO_ENCONTRADO"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Se viola una regla de negocio o hay un duplicado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "La sala ya est\u00e1 reservada en ese horario",
+                  "codigo": "RN-01"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Sedes"
+        ],
+        "summary": "Eliminar una sede",
+        "description": "RF-01. Solo ADMIN. No se elimina si est\u00e1 en uso (RN-12). Responde 200 sin cuerpo.",
+        "operationId": "eliminar_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Datos faltantes o con formato inv\u00e1lido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "nombre: El nombre es obligatorio",
+                  "codigo": "VALIDACION"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sin token, o con un token alterado o vencido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "codigo": "NO_AUTENTICADO"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "El usuario no tiene permiso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "No tienes permiso para esta operaci\u00f3n",
+                  "codigo": "ACCESO_DENEGADO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "El recurso no existe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Reserva con id 99 no existe",
+                  "codigo": "NO_ENCONTRADO"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Se viola una regla de negocio o hay un duplicado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "La sala ya est\u00e1 reservada en ese horario",
+                  "codigo": "RN-01"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/salas/{id}": {
+      "get": {
+        "tags": [
+          "Salas"
+        ],
+        "summary": "Consultar una sala",
+        "description": "RF-01. Cualquier usuario autenticado.",
+        "operationId": "buscar_2",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaSala"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos faltantes o con formato inv\u00e1lido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "nombre: El nombre es obligatorio",
+                  "codigo": "VALIDACION"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sin token, o con un token alterado o vencido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "codigo": "NO_AUTENTICADO"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "El usuario no tiene permiso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "No tienes permiso para esta operaci\u00f3n",
+                  "codigo": "ACCESO_DENEGADO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "El recurso no existe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Reserva con id 99 no existe",
+                  "codigo": "NO_ENCONTRADO"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Salas"
+        ],
+        "summary": "Actualizar una sala",
+        "description": "RF-01. Solo ADMIN. Nombre \u00fanico (RN-11).",
+        "operationId": "actualizar_2",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SolicitudSala"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaSala"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos faltantes o con formato inv\u00e1lido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "nombre: El nombre es obligatorio",
+                  "codigo": "VALIDACION"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sin token, o con un token alterado o vencido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "codigo": "NO_AUTENTICADO"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "El usuario no tiene permiso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "No tienes permiso para esta operaci\u00f3n",
+                  "codigo": "ACCESO_DENEGADO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "El recurso no existe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Reserva con id 99 no existe",
+                  "codigo": "NO_ENCONTRADO"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Se viola una regla de negocio o hay un duplicado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "La sala ya est\u00e1 reservada en ese horario",
+                  "codigo": "RN-01"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Salas"
+        ],
+        "summary": "Eliminar una sala",
+        "description": "RF-01. Solo ADMIN. No se elimina si est\u00e1 en uso (RN-12). Responde 200 sin cuerpo.",
+        "operationId": "eliminar_2",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Datos faltantes o con formato inv\u00e1lido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "nombre: El nombre es obligatorio",
+                  "codigo": "VALIDACION"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sin token, o con un token alterado o vencido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "codigo": "NO_AUTENTICADO"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "El usuario no tiene permiso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "No tienes permiso para esta operaci\u00f3n",
+                  "codigo": "ACCESO_DENEGADO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "El recurso no existe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Reserva con id 99 no existe",
+                  "codigo": "NO_ENCONTRADO"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Se viola una regla de negocio o hay un duplicado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "La sala ya est\u00e1 reservada en ese horario",
+                  "codigo": "RN-01"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/planes/{id}": {
+      "get": {
+        "tags": [
+          "Planes"
+        ],
+        "summary": "Consultar un plan",
+        "description": "RF-01. Cualquier usuario autenticado.",
+        "operationId": "buscar_3",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaPlan"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos faltantes o con formato inv\u00e1lido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "nombre: El nombre es obligatorio",
+                  "codigo": "VALIDACION"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sin token, o con un token alterado o vencido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "codigo": "NO_AUTENTICADO"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "El usuario no tiene permiso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "No tienes permiso para esta operaci\u00f3n",
+                  "codigo": "ACCESO_DENEGADO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "El recurso no existe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Reserva con id 99 no existe",
+                  "codigo": "NO_ENCONTRADO"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Planes"
+        ],
+        "summary": "Actualizar un plan",
+        "description": "RF-01. Solo ADMIN. Nombre \u00fanico (RN-11).",
+        "operationId": "actualizar_3",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SolicitudPlan"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaPlan"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos faltantes o con formato inv\u00e1lido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "nombre: El nombre es obligatorio",
+                  "codigo": "VALIDACION"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sin token, o con un token alterado o vencido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "codigo": "NO_AUTENTICADO"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "El usuario no tiene permiso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "No tienes permiso para esta operaci\u00f3n",
+                  "codigo": "ACCESO_DENEGADO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "El recurso no existe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Reserva con id 99 no existe",
+                  "codigo": "NO_ENCONTRADO"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Se viola una regla de negocio o hay un duplicado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "La sala ya est\u00e1 reservada en ese horario",
+                  "codigo": "RN-01"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Planes"
+        ],
+        "summary": "Eliminar un plan",
+        "description": "RF-01. Solo ADMIN. No se elimina si est\u00e1 en uso (RN-12). Responde 200 sin cuerpo.",
+        "operationId": "eliminar_3",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Datos faltantes o con formato inv\u00e1lido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "nombre: El nombre es obligatorio",
+                  "codigo": "VALIDACION"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sin token, o con un token alterado o vencido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "codigo": "NO_AUTENTICADO"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "El usuario no tiene permiso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "No tienes permiso para esta operaci\u00f3n",
+                  "codigo": "ACCESO_DENEGADO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "El recurso no existe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Reserva con id 99 no existe",
+                  "codigo": "NO_ENCONTRADO"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Se viola una regla de negocio o hay un duplicado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "La sala ya est\u00e1 reservada en ese horario",
+                  "codigo": "RN-01"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/miembros/{id}": {
+      "get": {
+        "tags": [
+          "Miembros"
+        ],
+        "summary": "Consultar un miembro",
+        "description": "RF-02. ADMIN y RECEPTIONIST; un MEMBER solo el suyo.",
+        "operationId": "buscar_4",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaMiembro"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos faltantes o con formato inv\u00e1lido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "nombre: El nombre es obligatorio",
+                  "codigo": "VALIDACION"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sin token, o con un token alterado o vencido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "codigo": "NO_AUTENTICADO"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "El usuario no tiene permiso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "No tienes permiso para esta operaci\u00f3n",
+                  "codigo": "ACCESO_DENEGADO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "El recurso no existe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Reserva con id 99 no existe",
+                  "codigo": "NO_ENCONTRADO"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Miembros"
+        ],
+        "summary": "Actualizar nombre, email y plan",
+        "description": "RF-02. ADMIN y RECEPTIONIST.",
+        "operationId": "actualizar_4",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SolicitudActualizarMiembro"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaMiembro"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos faltantes o con formato inv\u00e1lido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "nombre: El nombre es obligatorio",
+                  "codigo": "VALIDACION"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sin token, o con un token alterado o vencido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "codigo": "NO_AUTENTICADO"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "El usuario no tiene permiso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "No tienes permiso para esta operaci\u00f3n",
+                  "codigo": "ACCESO_DENEGADO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "El recurso no existe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Reserva con id 99 no existe",
+                  "codigo": "NO_ENCONTRADO"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Se viola una regla de negocio o hay un duplicado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "La sala ya est\u00e1 reservada en ese horario",
+                  "codigo": "RN-01"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Miembros"
+        ],
+        "summary": "Eliminar un miembro",
+        "description": "RF-02. ADMIN y RECEPTIONIST. No se elimina si tiene reservas (RN-12). Responde 200 sin cuerpo.",
+        "operationId": "eliminar_4",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Datos faltantes o con formato inv\u00e1lido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "nombre: El nombre es obligatorio",
+                  "codigo": "VALIDACION"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sin token, o con un token alterado o vencido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "codigo": "NO_AUTENTICADO"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "El usuario no tiene permiso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "No tienes permiso para esta operaci\u00f3n",
+                  "codigo": "ACCESO_DENEGADO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "El recurso no existe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Reserva con id 99 no existe",
+                  "codigo": "NO_ENCONTRADO"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Se viola una regla de negocio o hay un duplicado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "La sala ya est\u00e1 reservada en ese horario",
+                  "codigo": "RN-01"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/equipamientos/{id}": {
+      "get": {
+        "tags": [
+          "Equipamientos"
+        ],
+        "summary": "Consultar un equipamiento",
+        "description": "RF-01. Cualquier usuario autenticado.",
+        "operationId": "buscar_5",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaEquipamiento"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos faltantes o con formato inv\u00e1lido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "nombre: El nombre es obligatorio",
+                  "codigo": "VALIDACION"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sin token, o con un token alterado o vencido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "codigo": "NO_AUTENTICADO"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "El usuario no tiene permiso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "No tienes permiso para esta operaci\u00f3n",
+                  "codigo": "ACCESO_DENEGADO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "El recurso no existe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Reserva con id 99 no existe",
+                  "codigo": "NO_ENCONTRADO"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Equipamientos"
+        ],
+        "summary": "Actualizar un equipamiento",
+        "description": "RF-01. Solo ADMIN. Nombre \u00fanico (RN-11).",
+        "operationId": "actualizar_5",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SolicitudEquipamiento"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaEquipamiento"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos faltantes o con formato inv\u00e1lido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "nombre: El nombre es obligatorio",
+                  "codigo": "VALIDACION"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sin token, o con un token alterado o vencido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "codigo": "NO_AUTENTICADO"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "El usuario no tiene permiso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "No tienes permiso para esta operaci\u00f3n",
+                  "codigo": "ACCESO_DENEGADO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "El recurso no existe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Reserva con id 99 no existe",
+                  "codigo": "NO_ENCONTRADO"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Se viola una regla de negocio o hay un duplicado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "La sala ya est\u00e1 reservada en ese horario",
+                  "codigo": "RN-01"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Equipamientos"
+        ],
+        "summary": "Eliminar un equipamiento",
+        "description": "RF-01. Solo ADMIN. No se elimina si est\u00e1 en uso (RN-12). Responde 200 sin cuerpo.",
+        "operationId": "eliminar_5",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Datos faltantes o con formato inv\u00e1lido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "nombre: El nombre es obligatorio",
+                  "codigo": "VALIDACION"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sin token, o con un token alterado o vencido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "codigo": "NO_AUTENTICADO"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "El usuario no tiene permiso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "No tienes permiso para esta operaci\u00f3n",
+                  "codigo": "ACCESO_DENEGADO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "El recurso no existe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Reserva con id 99 no existe",
+                  "codigo": "NO_ENCONTRADO"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Se viola una regla de negocio o hay un duplicado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "La sala ya est\u00e1 reservada en ese horario",
+                  "codigo": "RN-01"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/servicios-adicionales": {
+      "get": {
+        "tags": [
+          "Servicios adicionales"
+        ],
+        "summary": "Listar servicios adicionales",
+        "description": "RF-01. Cualquier usuario autenticado.",
+        "operationId": "listar",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RespuestaServicioAdicional"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos faltantes o con formato inv\u00e1lido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "nombre: El nombre es obligatorio",
+                  "codigo": "VALIDACION"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sin token, o con un token alterado o vencido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "codigo": "NO_AUTENTICADO"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "El usuario no tiene permiso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "No tienes permiso para esta operaci\u00f3n",
+                  "codigo": "ACCESO_DENEGADO"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Servicios adicionales"
+        ],
+        "summary": "Crear un servicio adicional",
+        "description": "RF-01. Solo ADMIN. Nombre \u00fanico (RN-11).",
+        "operationId": "crear",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SolicitudServicioAdicional"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaServicioAdicional"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos faltantes o con formato inv\u00e1lido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "nombre: El nombre es obligatorio",
+                  "codigo": "VALIDACION"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sin token, o con un token alterado o vencido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "codigo": "NO_AUTENTICADO"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "El usuario no tiene permiso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "No tienes permiso para esta operaci\u00f3n",
+                  "codigo": "ACCESO_DENEGADO"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Se viola una regla de negocio o hay un duplicado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "La sala ya est\u00e1 reservada en ese horario",
+                  "codigo": "RN-01"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/sedes": {
+      "get": {
+        "tags": [
+          "Sedes"
+        ],
+        "summary": "Listar sedes",
+        "description": "RF-01. Cualquier usuario autenticado.",
+        "operationId": "listar_1",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RespuestaSede"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos faltantes o con formato inv\u00e1lido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "nombre: El nombre es obligatorio",
+                  "codigo": "VALIDACION"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sin token, o con un token alterado o vencido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "codigo": "NO_AUTENTICADO"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "El usuario no tiene permiso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "No tienes permiso para esta operaci\u00f3n",
+                  "codigo": "ACCESO_DENEGADO"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Sedes"
+        ],
+        "summary": "Crear una sede",
+        "description": "RF-01. Solo ADMIN. Nombre \u00fanico (RN-11).",
+        "operationId": "crear_1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SolicitudSede"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaSede"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos faltantes o con formato inv\u00e1lido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "nombre: El nombre es obligatorio",
+                  "codigo": "VALIDACION"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sin token, o con un token alterado o vencido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "codigo": "NO_AUTENTICADO"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "El usuario no tiene permiso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "No tienes permiso para esta operaci\u00f3n",
+                  "codigo": "ACCESO_DENEGADO"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Se viola una regla de negocio o hay un duplicado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "La sala ya est\u00e1 reservada en ese horario",
+                  "codigo": "RN-01"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/salas": {
+      "get": {
+        "tags": [
+          "Salas"
+        ],
+        "summary": "Listar salas",
+        "description": "RF-01. Cualquier usuario autenticado. Con sedeId, solo las de esa sede.",
+        "operationId": "listar_2",
+        "parameters": [
+          {
+            "name": "sedeId",
+            "in": "query",
+            "description": "Filtra por sede (opcional)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RespuestaSala"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos faltantes o con formato inv\u00e1lido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "nombre: El nombre es obligatorio",
+                  "codigo": "VALIDACION"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sin token, o con un token alterado o vencido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "codigo": "NO_AUTENTICADO"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "El usuario no tiene permiso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "No tienes permiso para esta operaci\u00f3n",
+                  "codigo": "ACCESO_DENEGADO"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Salas"
+        ],
+        "summary": "Crear una sala",
+        "description": "RF-01. Solo ADMIN. Nombre \u00fanico (RN-11).",
+        "operationId": "crear_2",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SolicitudSala"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaSala"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos faltantes o con formato inv\u00e1lido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "nombre: El nombre es obligatorio",
+                  "codigo": "VALIDACION"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sin token, o con un token alterado o vencido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "codigo": "NO_AUTENTICADO"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "El usuario no tiene permiso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "No tienes permiso para esta operaci\u00f3n",
+                  "codigo": "ACCESO_DENEGADO"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Se viola una regla de negocio o hay un duplicado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "La sala ya est\u00e1 reservada en ese horario",
+                  "codigo": "RN-01"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/reservas": {
+      "get": {
+        "tags": [
+          "Reservas"
+        ],
+        "summary": "Listar reservas con un filtro",
+        "description": "RF-05. Exactamente un filtro: miembroId, salaId + fecha, o estado. ADMIN y RECEPTIONIST; un MEMBER solo con su propio miembroId.",
+        "operationId": "listar_3",
+        "parameters": [
+          {
+            "name": "miembroId",
+            "in": "query",
+            "description": "Por miembro",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          },
+          {
+            "name": "salaId",
+            "in": "query",
+            "description": "Por sala (con fecha)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          },
+          {
+            "name": "fecha",
+            "in": "query",
+            "description": "Fecha yyyy-MM-dd (con salaId)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "example": "2026-12-01"
+          },
+          {
+            "name": "estado",
+            "in": "query",
+            "description": "Por estado",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "PENDING",
+                "CONFIRMED",
+                "COMPLETED",
+                "CANCELLED"
+              ]
+            },
+            "example": "PENDING"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RespuestaReserva"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos faltantes o con formato inv\u00e1lido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "nombre: El nombre es obligatorio",
+                  "codigo": "VALIDACION"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sin token, o con un token alterado o vencido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "codigo": "NO_AUTENTICADO"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "El usuario no tiene permiso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "No tienes permiso para esta operaci\u00f3n",
+                  "codigo": "ACCESO_DENEGADO"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Reservas"
+        ],
+        "summary": "Crear una reserva",
+        "description": "RF-04. ADMIN y RECEPTIONIST; un MEMBER solo a su nombre. Aplica RN-01 a RN-07 y devuelve el costo calculado.",
+        "operationId": "crear_3",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SolicitudReserva"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaReserva"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos faltantes o con formato inv\u00e1lido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "nombre: El nombre es obligatorio",
+                  "codigo": "VALIDACION"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sin token, o con un token alterado o vencido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "codigo": "NO_AUTENTICADO"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "El usuario no tiene permiso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "No tienes permiso para esta operaci\u00f3n",
+                  "codigo": "ACCESO_DENEGADO"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Se viola una regla de negocio o hay un duplicado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "La sala ya est\u00e1 reservada en ese horario",
+                  "codigo": "RN-01"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/reservas/{id}/servicios": {
+      "post": {
+        "tags": [
+          "Reservas"
+        ],
+        "summary": "Agregar un servicio",
+        "description": "RF-06. Solo con la reserva PENDING (RN-10). Si ya estaba, suma la cantidad. Devuelve la reserva con el costo recalculado.",
+        "operationId": "agregarServicio",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ItemServicio"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaReserva"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos faltantes o con formato inv\u00e1lido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "nombre: El nombre es obligatorio",
+                  "codigo": "VALIDACION"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sin token, o con un token alterado o vencido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "codigo": "NO_AUTENTICADO"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "El usuario no tiene permiso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "No tienes permiso para esta operaci\u00f3n",
+                  "codigo": "ACCESO_DENEGADO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "El recurso no existe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Reserva con id 99 no existe",
+                  "codigo": "NO_ENCONTRADO"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Se viola una regla de negocio o hay un duplicado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "La sala ya est\u00e1 reservada en ese horario",
+                  "codigo": "RN-01"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/reservas/{id}/confirmar": {
+      "post": {
+        "tags": [
+          "Reservas"
+        ],
+        "summary": "Confirmar",
+        "description": "RF-07. ADMIN y RECEPTIONIST. Solo desde PENDING (RN-09).",
+        "operationId": "confirmar",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaReserva"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos faltantes o con formato inv\u00e1lido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "nombre: El nombre es obligatorio",
+                  "codigo": "VALIDACION"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sin token, o con un token alterado o vencido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "codigo": "NO_AUTENTICADO"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "El usuario no tiene permiso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "No tienes permiso para esta operaci\u00f3n",
+                  "codigo": "ACCESO_DENEGADO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "El recurso no existe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Reserva con id 99 no existe",
+                  "codigo": "NO_ENCONTRADO"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Se viola una regla de negocio o hay un duplicado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "La sala ya est\u00e1 reservada en ese horario",
+                  "codigo": "RN-01"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/reservas/{id}/completar": {
+      "post": {
+        "tags": [
+          "Reservas"
+        ],
+        "summary": "Completar",
+        "description": "RF-09. ADMIN y RECEPTIONIST. Solo desde CONFIRMED (RN-09).",
+        "operationId": "completar",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaReserva"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos faltantes o con formato inv\u00e1lido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "nombre: El nombre es obligatorio",
+                  "codigo": "VALIDACION"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sin token, o con un token alterado o vencido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "codigo": "NO_AUTENTICADO"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "El usuario no tiene permiso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "No tienes permiso para esta operaci\u00f3n",
+                  "codigo": "ACCESO_DENEGADO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "El recurso no existe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Reserva con id 99 no existe",
+                  "codigo": "NO_ENCONTRADO"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Se viola una regla de negocio o hay un duplicado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "La sala ya est\u00e1 reservada en ese horario",
+                  "codigo": "RN-01"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/reservas/{id}/cancelar": {
+      "post": {
+        "tags": [
+          "Reservas"
+        ],
+        "summary": "Cancelar",
+        "description": "RF-08. ADMIN y RECEPTIONIST; un MEMBER solo las suyas. Con 24 h o m\u00e1s: sin cargo. Entre 24 h y 2 h: 50 % del costo de la sala. Con menos de 2 h o ya iniciada: 409 (RN-08).",
+        "operationId": "cancelar",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaReserva"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos faltantes o con formato inv\u00e1lido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "nombre: El nombre es obligatorio",
+                  "codigo": "VALIDACION"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sin token, o con un token alterado o vencido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "codigo": "NO_AUTENTICADO"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "El usuario no tiene permiso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "No tienes permiso para esta operaci\u00f3n",
+                  "codigo": "ACCESO_DENEGADO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "El recurso no existe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Reserva con id 99 no existe",
+                  "codigo": "NO_ENCONTRADO"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Se viola una regla de negocio o hay un duplicado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "La sala ya est\u00e1 reservada en ese horario",
+                  "codigo": "RN-01"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/planes": {
+      "get": {
+        "tags": [
+          "Planes"
+        ],
+        "summary": "Listar planes",
+        "description": "RF-01. Cualquier usuario autenticado.",
+        "operationId": "listar_4",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RespuestaPlan"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos faltantes o con formato inv\u00e1lido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "nombre: El nombre es obligatorio",
+                  "codigo": "VALIDACION"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sin token, o con un token alterado o vencido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "codigo": "NO_AUTENTICADO"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "El usuario no tiene permiso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "No tienes permiso para esta operaci\u00f3n",
+                  "codigo": "ACCESO_DENEGADO"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Planes"
+        ],
+        "summary": "Crear un plan",
+        "description": "RF-01. Solo ADMIN. Nombre \u00fanico (RN-11).",
+        "operationId": "crear_4",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SolicitudPlan"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaPlan"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos faltantes o con formato inv\u00e1lido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "nombre: El nombre es obligatorio",
+                  "codigo": "VALIDACION"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sin token, o con un token alterado o vencido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "codigo": "NO_AUTENTICADO"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "El usuario no tiene permiso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "No tienes permiso para esta operaci\u00f3n",
+                  "codigo": "ACCESO_DENEGADO"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Se viola una regla de negocio o hay un duplicado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "La sala ya est\u00e1 reservada en ese horario",
+                  "codigo": "RN-01"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/miembros": {
+      "get": {
+        "tags": [
+          "Miembros"
+        ],
+        "summary": "Listar miembros",
+        "description": "RF-02. ADMIN y RECEPTIONIST. Filtros opcionales por nombre (contiene) y estado.",
+        "operationId": "listar_5",
+        "parameters": [
+          {
+            "name": "nombre",
+            "in": "query",
+            "description": "Parte del nombre",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "g\u00f3mez"
+          },
+          {
+            "name": "estado",
+            "in": "query",
+            "description": "Estado",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ACTIVE",
+                "SUSPENDED"
+              ]
+            },
+            "example": "SUSPENDED"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RespuestaMiembro"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos faltantes o con formato inv\u00e1lido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "nombre: El nombre es obligatorio",
+                  "codigo": "VALIDACION"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sin token, o con un token alterado o vencido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "codigo": "NO_AUTENTICADO"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "El usuario no tiene permiso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "No tienes permiso para esta operaci\u00f3n",
+                  "codigo": "ACCESO_DENEGADO"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Miembros"
+        ],
+        "summary": "Registrar un miembro y su cuenta",
+        "description": "RF-02. ADMIN y RECEPTIONIST. Crea el miembro (ACTIVE) y su cuenta con rol MEMBER. Documento, email y usuario \u00fanicos (RN-11).",
+        "operationId": "crear_5",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SolicitudMiembro"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaMiembro"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos faltantes o con formato inv\u00e1lido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "nombre: El nombre es obligatorio",
+                  "codigo": "VALIDACION"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sin token, o con un token alterado o vencido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "codigo": "NO_AUTENTICADO"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "El usuario no tiene permiso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "No tienes permiso para esta operaci\u00f3n",
+                  "codigo": "ACCESO_DENEGADO"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Se viola una regla de negocio o hay un duplicado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "La sala ya est\u00e1 reservada en ese horario",
+                  "codigo": "RN-01"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/equipamientos": {
+      "get": {
+        "tags": [
+          "Equipamientos"
+        ],
+        "summary": "Listar equipamientos",
+        "description": "RF-01. Cualquier usuario autenticado.",
+        "operationId": "listar_6",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RespuestaEquipamiento"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos faltantes o con formato inv\u00e1lido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "nombre: El nombre es obligatorio",
+                  "codigo": "VALIDACION"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sin token, o con un token alterado o vencido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "codigo": "NO_AUTENTICADO"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "El usuario no tiene permiso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "No tienes permiso para esta operaci\u00f3n",
+                  "codigo": "ACCESO_DENEGADO"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Equipamientos"
+        ],
+        "summary": "Crear un equipamiento",
+        "description": "RF-01. Solo ADMIN. Nombre \u00fanico (RN-11).",
+        "operationId": "crear_6",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SolicitudEquipamiento"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaEquipamiento"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos faltantes o con formato inv\u00e1lido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "nombre: El nombre es obligatorio",
+                  "codigo": "VALIDACION"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sin token, o con un token alterado o vencido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "codigo": "NO_AUTENTICADO"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "El usuario no tiene permiso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "No tienes permiso para esta operaci\u00f3n",
+                  "codigo": "ACCESO_DENEGADO"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Se viola una regla de negocio o hay un duplicado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "La sala ya est\u00e1 reservada en ese horario",
+                  "codigo": "RN-01"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/miembros/{id}/suspender": {
+      "patch": {
+        "tags": [
+          "Miembros"
+        ],
+        "summary": "Suspender un miembro",
+        "description": "RF-02. ADMIN y RECEPTIONIST. Un miembro suspendido no puede reservar (RN-05).",
+        "operationId": "suspender",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaMiembro"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos faltantes o con formato inv\u00e1lido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "nombre: El nombre es obligatorio",
+                  "codigo": "VALIDACION"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sin token, o con un token alterado o vencido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "codigo": "NO_AUTENTICADO"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "El usuario no tiene permiso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "No tienes permiso para esta operaci\u00f3n",
+                  "codigo": "ACCESO_DENEGADO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "El recurso no existe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Reserva con id 99 no existe",
+                  "codigo": "NO_ENCONTRADO"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Se viola una regla de negocio o hay un duplicado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "La sala ya est\u00e1 reservada en ese horario",
+                  "codigo": "RN-01"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/miembros/{id}/activar": {
+      "patch": {
+        "tags": [
+          "Miembros"
+        ],
+        "summary": "Reactivar un miembro",
+        "description": "RF-02. ADMIN y RECEPTIONIST.",
+        "operationId": "activar",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaMiembro"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos faltantes o con formato inv\u00e1lido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "nombre: El nombre es obligatorio",
+                  "codigo": "VALIDACION"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sin token, o con un token alterado o vencido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "codigo": "NO_AUTENTICADO"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "El usuario no tiene permiso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "No tienes permiso para esta operaci\u00f3n",
+                  "codigo": "ACCESO_DENEGADO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "El recurso no existe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Reserva con id 99 no existe",
+                  "codigo": "NO_ENCONTRADO"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Se viola una regla de negocio o hay un duplicado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "La sala ya est\u00e1 reservada en ese horario",
+                  "codigo": "RN-01"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/reservas/{id}": {
+      "get": {
+        "tags": [
+          "Reservas"
+        ],
+        "summary": "Consultar una reserva",
+        "description": "RF-05. ADMIN y RECEPTIONIST; un MEMBER solo si es suya.",
+        "operationId": "buscar_6",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaReserva"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos faltantes o con formato inv\u00e1lido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "nombre: El nombre es obligatorio",
+                  "codigo": "VALIDACION"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sin token, o con un token alterado o vencido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "codigo": "NO_AUTENTICADO"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "El usuario no tiene permiso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "No tienes permiso para esta operaci\u00f3n",
+                  "codigo": "ACCESO_DENEGADO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "El recurso no existe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Reserva con id 99 no existe",
+                  "codigo": "NO_ENCONTRADO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/miembros/{id}/consumo": {
+      "get": {
+        "tags": [
+          "Miembros"
+        ],
+        "summary": "Consumo mensual de horas",
+        "description": "RF-10. ADMIN y RECEPTIONIST; un MEMBER solo el suyo. Horas incluidas, usadas, restantes y excedentes.",
+        "operationId": "consumo",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "mes",
+            "in": "query",
+            "description": "Mes yyyy-MM (por defecto, el actual)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "2026-11"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaConsumo"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos faltantes o con formato inv\u00e1lido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "nombre: El nombre es obligatorio",
+                  "codigo": "VALIDACION"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sin token, o con un token alterado o vencido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "codigo": "NO_AUTENTICADO"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "El usuario no tiene permiso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "No tienes permiso para esta operaci\u00f3n",
+                  "codigo": "ACCESO_DENEGADO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "El recurso no existe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Reserva con id 99 no existe",
+                  "codigo": "NO_ENCONTRADO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/disponibilidad": {
+      "get": {
+        "tags": [
+          "Disponibilidad"
+        ],
+        "summary": "Salas libres de una sede",
+        "description": "RF-03. Cualquier usuario autenticado. Salas activas, con capacidad suficiente, con todo el equipamiento pedido y sin reservas activas que se crucen con el rango.",
+        "operationId": "salasLibres",
+        "parameters": [
+          {
+            "name": "sedeId",
+            "in": "query",
+            "description": "Sede",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1
+          },
+          {
+            "name": "fecha",
+            "in": "query",
+            "description": "Fecha yyyy-MM-dd",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "example": "2026-12-01"
+          },
+          {
+            "name": "horaInicio",
+            "in": "query",
+            "description": "Hora de inicio HH:mm",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "time-local"
+            },
+            "example": "10:00"
+          },
+          {
+            "name": "horaFin",
+            "in": "query",
+            "description": "Hora de fin HH:mm",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "time-local"
+            },
+            "example": "11:00"
+          },
+          {
+            "name": "capacidadMinima",
+            "in": "query",
+            "description": "Capacidad m\u00ednima (opcional)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "example": 4
+          },
+          {
+            "name": "equipamientoIds",
+            "in": "query",
+            "description": "Ids de equipamiento que la sala debe tener (opcional)",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "format": "int64"
+              }
+            },
+            "example": 4
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RespuestaSala"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos faltantes o con formato inv\u00e1lido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "nombre: El nombre es obligatorio",
+                  "codigo": "VALIDACION"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sin token, o con un token alterado o vencido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "codigo": "NO_AUTENTICADO"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "El usuario no tiene permiso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "No tienes permiso para esta operaci\u00f3n",
+                  "codigo": "ACCESO_DENEGADO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/reservas/{id}/servicios/{servicioId}": {
+      "delete": {
+        "tags": [
+          "Reservas"
+        ],
+        "summary": "Quitar un servicio",
+        "description": "RF-06. Solo con la reserva PENDING (RN-10). Borra el detalle y recalcula el costo. Responde 200 sin cuerpo.",
+        "operationId": "quitarServicio",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "servicioId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Datos faltantes o con formato inv\u00e1lido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "nombre: El nombre es obligatorio",
+                  "codigo": "VALIDACION"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sin token, o con un token alterado o vencido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "codigo": "NO_AUTENTICADO"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "El usuario no tiene permiso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "No tienes permiso para esta operaci\u00f3n",
+                  "codigo": "ACCESO_DENEGADO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "El recurso no existe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "Reserva con id 99 no existe",
+                  "codigo": "NO_ENCONTRADO"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Se viola una regla de negocio o hay un duplicado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "error": "La sala ya est\u00e1 reservada en ese horario",
+                  "codigo": "RN-01"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "SolicitudServicioAdicional": {
+        "type": "object",
+        "properties": {
+          "nombre": {
+            "type": "string",
+            "example": "Almuerzo ejecutivo",
+            "maxLength": 80,
+            "minLength": 0
+          },
+          "precioUnitario": {
+            "type": "number",
+            "example": 18000.0,
+            "minimum": 0.0
+          }
+        },
+        "required": [
+          "nombre",
+          "precioUnitario"
+        ]
+      },
+      "RespuestaServicioAdicional": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "nombre": {
+            "type": "string"
+          },
+          "precioUnitario": {
+            "type": "number"
+          }
+        }
+      },
+      "SolicitudSede": {
+        "type": "object",
+        "properties": {
+          "nombre": {
+            "type": "string",
+            "example": "Sede Cabecera",
+            "maxLength": 100,
+            "minLength": 0
+          },
+          "ciudad": {
+            "type": "string",
+            "example": "Bucaramanga",
+            "maxLength": 80,
+            "minLength": 0
+          },
+          "direccion": {
+            "type": "string",
+            "example": "Carrera 33 # 48-20",
+            "maxLength": 150,
+            "minLength": 0
+          },
+          "horaApertura": {
+            "type": "string",
+            "format": "time-local",
+            "example": "07:00:00"
+          },
+          "horaCierre": {
+            "type": "string",
+            "format": "time-local",
+            "example": "20:00:00"
+          }
+        },
+        "required": [
+          "ciudad",
+          "direccion",
+          "horaApertura",
+          "horaCierre",
+          "nombre"
+        ]
+      },
+      "RespuestaSede": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "nombre": {
+            "type": "string"
+          },
+          "ciudad": {
+            "type": "string"
+          },
+          "direccion": {
+            "type": "string"
+          },
+          "horaApertura": {
+            "type": "string",
+            "format": "time-local"
+          },
+          "horaCierre": {
+            "type": "string",
+            "format": "time-local"
+          }
+        }
+      },
+      "SolicitudSala": {
+        "type": "object",
+        "properties": {
+          "nombre": {
+            "type": "string",
+            "example": "Sala Lebrija",
+            "maxLength": 80,
+            "minLength": 0
+          },
+          "tipo": {
+            "type": "string",
+            "enum": [
+              "MEETING_ROOM",
+              "PRIVATE_OFFICE",
+              "DESK"
+            ],
+            "example": "MEETING_ROOM"
+          },
+          "capacidad": {
+            "type": "integer",
+            "format": "int32",
+            "example": 6,
+            "minimum": 1
+          },
+          "tarifaHora": {
+            "type": "number",
+            "example": 30000.0,
+            "exclusiveMinimum": 0.0
+          },
+          "activa": {
+            "type": "boolean",
+            "example": true
+          },
+          "sedeId": {
+            "type": "integer",
+            "format": "int64",
+            "example": 1
+          },
+          "equipamientoIds": {
+            "type": "array",
+            "example": [
+              1,
+              3
+            ],
+            "items": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        },
+        "required": [
+          "capacidad",
+          "nombre",
+          "sedeId",
+          "tarifaHora",
+          "tipo"
+        ]
+      },
+      "RespuestaEquipamiento": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "nombre": {
+            "type": "string"
+          }
+        }
+      },
+      "RespuestaSala": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "nombre": {
+            "type": "string"
+          },
+          "tipo": {
+            "type": "string",
+            "enum": [
+              "MEETING_ROOM",
+              "PRIVATE_OFFICE",
+              "DESK"
+            ]
+          },
+          "capacidad": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "tarifaHora": {
+            "type": "number"
+          },
+          "activa": {
+            "type": "boolean"
+          },
+          "sedeId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "sedeNombre": {
+            "type": "string"
+          },
+          "equipamiento": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RespuestaEquipamiento"
+            }
+          }
+        }
+      },
+      "SolicitudPlan": {
+        "type": "object",
+        "properties": {
+          "nombre": {
+            "type": "string",
+            "example": "Plus",
+            "maxLength": 80,
+            "minLength": 0
+          },
+          "horasIncluidasMes": {
+            "type": "integer",
+            "format": "int32",
+            "example": 20,
+            "minimum": 0
+          },
+          "descuentoExcedente": {
+            "type": "integer",
+            "format": "int32",
+            "example": 15,
+            "maximum": 100,
+            "minimum": 0
+          },
+          "maxReservasActivas": {
+            "type": "integer",
+            "format": "int32",
+            "example": 4,
+            "minimum": 1
+          }
+        },
+        "required": [
+          "descuentoExcedente",
+          "horasIncluidasMes",
+          "maxReservasActivas",
+          "nombre"
+        ]
+      },
+      "RespuestaPlan": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "nombre": {
+            "type": "string"
+          },
+          "horasIncluidasMes": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "descuentoExcedente": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maxReservasActivas": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "SolicitudActualizarMiembro": {
+        "type": "object",
+        "properties": {
+          "nombreCompleto": {
+            "type": "string",
+            "example": "Ana G\u00f3mez Rueda",
+            "maxLength": 120,
+            "minLength": 0
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "ana.gomez@ejemplo.com",
+            "maxLength": 120,
+            "minLength": 0
+          },
+          "planId": {
+            "type": "integer",
+            "format": "int64",
+            "example": 3
+          }
+        },
+        "required": [
+          "email",
+          "nombreCompleto",
+          "planId"
+        ]
+      },
+      "RespuestaMiembro": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "documento": {
+            "type": "string"
+          },
+          "nombreCompleto": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "estado": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "SUSPENDED"
+            ]
+          },
+          "planId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "planNombre": {
+            "type": "string"
+          },
+          "usuario": {
+            "type": "string"
+          }
+        }
+      },
+      "SolicitudEquipamiento": {
+        "type": "object",
+        "properties": {
+          "nombre": {
+            "type": "string",
+            "example": "Pantalla interactiva",
+            "maxLength": 80,
+            "minLength": 0
+          }
+        },
+        "required": [
+          "nombre"
+        ]
+      },
+      "ItemServicio": {
+        "type": "object",
+        "properties": {
+          "servicioId": {
+            "type": "integer",
+            "format": "int64",
+            "example": 1
+          },
+          "cantidad": {
+            "type": "integer",
+            "format": "int32",
+            "example": 4,
+            "maximum": 500,
+            "minimum": 1
+          }
+        },
+        "required": [
+          "cantidad",
+          "servicioId"
+        ]
+      },
+      "SolicitudReserva": {
+        "type": "object",
+        "properties": {
+          "miembroId": {
+            "type": "integer",
+            "format": "int64",
+            "example": 1
+          },
+          "salaId": {
+            "type": "integer",
+            "format": "int64",
+            "example": 3
+          },
+          "inicio": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-12-01T10:00:00"
+          },
+          "fin": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-12-01T11:30:00"
+          },
+          "asistentes": {
+            "type": "integer",
+            "format": "int32",
+            "example": 3,
+            "minimum": 1
+          },
+          "servicios": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ItemServicio"
+            }
+          }
+        },
+        "required": [
+          "asistentes",
+          "fin",
+          "inicio",
+          "miembroId",
+          "salaId"
+        ]
+      },
+      "RespuestaDetalle": {
+        "type": "object",
+        "properties": {
+          "servicioId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "servicio": {
+            "type": "string"
+          },
+          "cantidad": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "precioUnitarioAplicado": {
+            "type": "number"
+          },
+          "subtotal": {
+            "type": "number"
+          }
+        }
+      },
+      "RespuestaReserva": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "inicio": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "fin": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "asistentes": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "estado": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "CONFIRMED",
+              "COMPLETED",
+              "CANCELLED"
+            ]
+          },
+          "salaId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "sala": {
+            "type": "string"
+          },
+          "sede": {
+            "type": "string"
+          },
+          "miembroId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "miembro": {
+            "type": "string"
+          },
+          "costoSala": {
+            "type": "number"
+          },
+          "costoServicios": {
+            "type": "number"
+          },
+          "costoTotal": {
+            "type": "number"
+          },
+          "cargoCancelacion": {
+            "type": "number"
+          },
+          "minutosDelPlanConsumidos": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "servicios": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RespuestaDetalle"
+            }
+          }
+        }
+      },
+      "SolicitudMiembro": {
+        "type": "object",
+        "properties": {
+          "documento": {
+            "type": "string",
+            "example": "1098000010",
+            "minLength": 1,
+            "pattern": "\\d{5,20}"
+          },
+          "nombreCompleto": {
+            "type": "string",
+            "example": "Valentina Mantilla",
+            "maxLength": 120,
+            "minLength": 0
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "valentina.mantilla@ejemplo.com",
+            "maxLength": 120,
+            "minLength": 0
+          },
+          "planId": {
+            "type": "integer",
+            "format": "int64",
+            "example": 2
+          },
+          "usuario": {
+            "type": "string",
+            "example": "valentina",
+            "minLength": 1,
+            "pattern": "[A-Za-z0-9._-]{3,50}"
+          },
+          "contrasena": {
+            "type": "string",
+            "example": "valentina123",
+            "maxLength": 72,
+            "minLength": 6
+          }
+        },
+        "required": [
+          "contrasena",
+          "documento",
+          "email",
+          "nombreCompleto",
+          "planId",
+          "usuario"
+        ]
+      },
+      "RespuestaConsumo": {
+        "type": "object",
+        "properties": {
+          "miembroId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "mes": {
+            "type": "string"
+          },
+          "horasIncluidas": {
+            "type": "number"
+          },
+          "horasUsadas": {
+            "type": "number"
+          },
+          "horasRestantes": {
+            "type": "number"
+          },
+          "horasExcedentes": {
+            "type": "number"
+          }
+        }
+      },
+      "RespuestaError": {
+        "description": "Cuerpo \u00fanico de todos los errores",
+        "properties": {
+          "error": {
+            "example": "La sala ya est\u00e1 reservada en ese horario"
+          },
+          "codigo": {
+            "example": "RN-01"
+          },
+          "timestamp": {
+            "format": "date-time",
+            "example": "2030-06-03T13:00:00Z"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "description": "Token obtenido en POST /auth/login. Vence a los 60 minutos.",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

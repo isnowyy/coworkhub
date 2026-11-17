@@ -17,10 +17,14 @@ import com.coworkhub.negocio.service.ServicioSedes;
 import com.coworkhub.presentacion.dto.SolicitudSede;
 import com.coworkhub.presentacion.dto.RespuestaSede;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/sedes")
+@Tag(name = "Sedes", description = "Sedes del coworking con su horario. Lectura: cualquier usuario autenticado. Escritura: solo ADMIN.")
 public class ControladorSedes {
 
     private final ServicioSedes servicio;
@@ -30,28 +34,34 @@ public class ControladorSedes {
     }
 
     @GetMapping
+    @Operation(summary = "Listar sedes", description = "RF-01. Cualquier usuario autenticado.")
     public List<RespuestaSede> listar() {
         return servicio.listar().stream().map(RespuestaSede::desde).toList();
     }
 
     @GetMapping("/{id}")
-    public RespuestaSede buscar(@PathVariable Long id) {
+    @Operation(summary = "Consultar una sede", description = "RF-01. Cualquier usuario autenticado.")
+    public RespuestaSede buscar(@Parameter(description = "Id", example = "1") @PathVariable Long id) {
         return RespuestaSede.desde(servicio.buscar(id));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Crear una sede", description = "RF-01. Solo ADMIN. Nombre único (RN-11).")
     public RespuestaSede crear(@Valid @RequestBody SolicitudSede solicitud) {
         return RespuestaSede.desde(servicio.crear(solicitud));
     }
 
     @PutMapping("/{id}")
-    public RespuestaSede actualizar(@PathVariable Long id, @Valid @RequestBody SolicitudSede solicitud) {
+    @Operation(summary = "Actualizar una sede", description = "RF-01. Solo ADMIN. Nombre único (RN-11).")
+    public RespuestaSede actualizar(@Parameter(description = "Id", example = "1") @PathVariable Long id,
+                         @Valid @RequestBody SolicitudSede solicitud) {
         return RespuestaSede.desde(servicio.actualizar(id, solicitud));
     }
 
     @DeleteMapping("/{id}")
-    public void eliminar(@PathVariable Long id) {
+    @Operation(summary = "Eliminar una sede", description = "RF-01. Solo ADMIN. No se elimina si está en uso (RN-12). Responde 200 sin cuerpo.")
+    public void eliminar(@Parameter(description = "Id", example = "1") @PathVariable Long id) {
         servicio.eliminar(id);
     }
 }

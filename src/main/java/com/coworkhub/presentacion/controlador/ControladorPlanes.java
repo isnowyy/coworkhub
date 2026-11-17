@@ -17,10 +17,14 @@ import com.coworkhub.negocio.service.ServicioPlanes;
 import com.coworkhub.presentacion.dto.SolicitudPlan;
 import com.coworkhub.presentacion.dto.RespuestaPlan;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/planes")
+@Tag(name = "Planes", description = "Planes de membresía: horas incluidas, descuento en excedentes y máximo de reservas activas. Lectura: cualquier usuario autenticado. Escritura: solo ADMIN.")
 public class ControladorPlanes {
 
     private final ServicioPlanes servicio;
@@ -30,28 +34,34 @@ public class ControladorPlanes {
     }
 
     @GetMapping
+    @Operation(summary = "Listar planes", description = "RF-01. Cualquier usuario autenticado.")
     public List<RespuestaPlan> listar() {
         return servicio.listar().stream().map(RespuestaPlan::desde).toList();
     }
 
     @GetMapping("/{id}")
-    public RespuestaPlan buscar(@PathVariable Long id) {
+    @Operation(summary = "Consultar un plan", description = "RF-01. Cualquier usuario autenticado.")
+    public RespuestaPlan buscar(@Parameter(description = "Id", example = "1") @PathVariable Long id) {
         return RespuestaPlan.desde(servicio.buscar(id));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Crear un plan", description = "RF-01. Solo ADMIN. Nombre único (RN-11).")
     public RespuestaPlan crear(@Valid @RequestBody SolicitudPlan solicitud) {
         return RespuestaPlan.desde(servicio.crear(solicitud));
     }
 
     @PutMapping("/{id}")
-    public RespuestaPlan actualizar(@PathVariable Long id, @Valid @RequestBody SolicitudPlan solicitud) {
+    @Operation(summary = "Actualizar un plan", description = "RF-01. Solo ADMIN. Nombre único (RN-11).")
+    public RespuestaPlan actualizar(@Parameter(description = "Id", example = "1") @PathVariable Long id,
+                         @Valid @RequestBody SolicitudPlan solicitud) {
         return RespuestaPlan.desde(servicio.actualizar(id, solicitud));
     }
 
     @DeleteMapping("/{id}")
-    public void eliminar(@PathVariable Long id) {
+    @Operation(summary = "Eliminar un plan", description = "RF-01. Solo ADMIN. No se elimina si está en uso (RN-12). Responde 200 sin cuerpo.")
+    public void eliminar(@Parameter(description = "Id", example = "1") @PathVariable Long id) {
         servicio.eliminar(id);
     }
 }
