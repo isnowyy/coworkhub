@@ -45,6 +45,10 @@
       "description": "Salas libres para reservar."
     },
     {
+      "name": "Autenticaci\u00f3n",
+      "description": "Inicio de sesi\u00f3n con JWT y datos del usuario actual."
+    },
+    {
       "name": "Sedes",
       "description": "Sedes del coworking con su horario. Lectura: cualquier usuario autenticado. Escritura: solo ADMIN."
     },
@@ -94,8 +98,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "nombre: El nombre es obligatorio",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "VALIDACION"
                 }
               }
@@ -109,8 +113,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_AUTENTICADO"
                 }
               }
@@ -124,8 +128,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "No tienes permiso para esta operaci\u00f3n",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "ACCESO_DENEGADO"
                 }
               }
@@ -139,8 +143,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Reserva con id 99 no existe",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_ENCONTRADO"
                 }
               }
@@ -197,8 +201,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "nombre: El nombre es obligatorio",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "VALIDACION"
                 }
               }
@@ -212,8 +216,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_AUTENTICADO"
                 }
               }
@@ -227,8 +231,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "No tienes permiso para esta operaci\u00f3n",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "ACCESO_DENEGADO"
                 }
               }
@@ -242,8 +246,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Reserva con id 99 no existe",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_ENCONTRADO"
                 }
               }
@@ -257,8 +261,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "La sala ya est\u00e1 reservada en ese horario",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "RN-01"
                 }
               }
@@ -298,8 +302,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "nombre: El nombre es obligatorio",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "VALIDACION"
                 }
               }
@@ -313,8 +317,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_AUTENTICADO"
                 }
               }
@@ -328,8 +332,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "No tienes permiso para esta operaci\u00f3n",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "ACCESO_DENEGADO"
                 }
               }
@@ -343,8 +347,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Reserva con id 99 no existe",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_ENCONTRADO"
                 }
               }
@@ -358,8 +362,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "La sala ya est\u00e1 reservada en ese horario",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "RN-01"
                 }
               }
@@ -408,8 +412,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "nombre: El nombre es obligatorio",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "VALIDACION"
                 }
               }
@@ -423,8 +427,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_AUTENTICADO"
                 }
               }
@@ -438,8 +442,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "No tienes permiso para esta operaci\u00f3n",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "ACCESO_DENEGADO"
                 }
               }
@@ -453,8 +457,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Reserva con id 99 no existe",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_ENCONTRADO"
                 }
               }
@@ -511,8 +515,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "nombre: El nombre es obligatorio",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "VALIDACION"
                 }
               }
@@ -526,8 +530,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_AUTENTICADO"
                 }
               }
@@ -541,8 +545,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "No tienes permiso para esta operaci\u00f3n",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "ACCESO_DENEGADO"
                 }
               }
@@ -556,8 +560,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Reserva con id 99 no existe",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_ENCONTRADO"
                 }
               }
@@ -571,8 +575,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "La sala ya est\u00e1 reservada en ese horario",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "RN-01"
                 }
               }
@@ -612,8 +616,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "nombre: El nombre es obligatorio",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "VALIDACION"
                 }
               }
@@ -627,8 +631,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_AUTENTICADO"
                 }
               }
@@ -642,8 +646,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "No tienes permiso para esta operaci\u00f3n",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "ACCESO_DENEGADO"
                 }
               }
@@ -657,8 +661,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Reserva con id 99 no existe",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_ENCONTRADO"
                 }
               }
@@ -672,8 +676,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "La sala ya est\u00e1 reservada en ese horario",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "RN-01"
                 }
               }
@@ -722,8 +726,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "nombre: El nombre es obligatorio",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "VALIDACION"
                 }
               }
@@ -737,8 +741,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_AUTENTICADO"
                 }
               }
@@ -752,8 +756,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "No tienes permiso para esta operaci\u00f3n",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "ACCESO_DENEGADO"
                 }
               }
@@ -767,8 +771,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Reserva con id 99 no existe",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_ENCONTRADO"
                 }
               }
@@ -825,8 +829,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "nombre: El nombre es obligatorio",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "VALIDACION"
                 }
               }
@@ -840,8 +844,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_AUTENTICADO"
                 }
               }
@@ -855,8 +859,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "No tienes permiso para esta operaci\u00f3n",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "ACCESO_DENEGADO"
                 }
               }
@@ -870,8 +874,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Reserva con id 99 no existe",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_ENCONTRADO"
                 }
               }
@@ -885,8 +889,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "La sala ya est\u00e1 reservada en ese horario",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "RN-01"
                 }
               }
@@ -926,8 +930,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "nombre: El nombre es obligatorio",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "VALIDACION"
                 }
               }
@@ -941,8 +945,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_AUTENTICADO"
                 }
               }
@@ -956,8 +960,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "No tienes permiso para esta operaci\u00f3n",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "ACCESO_DENEGADO"
                 }
               }
@@ -971,8 +975,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Reserva con id 99 no existe",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_ENCONTRADO"
                 }
               }
@@ -986,8 +990,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "La sala ya est\u00e1 reservada en ese horario",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "RN-01"
                 }
               }
@@ -1036,8 +1040,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "nombre: El nombre es obligatorio",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "VALIDACION"
                 }
               }
@@ -1051,8 +1055,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_AUTENTICADO"
                 }
               }
@@ -1066,8 +1070,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "No tienes permiso para esta operaci\u00f3n",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "ACCESO_DENEGADO"
                 }
               }
@@ -1081,8 +1085,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Reserva con id 99 no existe",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_ENCONTRADO"
                 }
               }
@@ -1139,8 +1143,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "nombre: El nombre es obligatorio",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "VALIDACION"
                 }
               }
@@ -1154,8 +1158,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_AUTENTICADO"
                 }
               }
@@ -1169,8 +1173,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "No tienes permiso para esta operaci\u00f3n",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "ACCESO_DENEGADO"
                 }
               }
@@ -1184,8 +1188,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Reserva con id 99 no existe",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_ENCONTRADO"
                 }
               }
@@ -1199,8 +1203,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "La sala ya est\u00e1 reservada en ese horario",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "RN-01"
                 }
               }
@@ -1240,8 +1244,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "nombre: El nombre es obligatorio",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "VALIDACION"
                 }
               }
@@ -1255,8 +1259,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_AUTENTICADO"
                 }
               }
@@ -1270,8 +1274,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "No tienes permiso para esta operaci\u00f3n",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "ACCESO_DENEGADO"
                 }
               }
@@ -1285,8 +1289,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Reserva con id 99 no existe",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_ENCONTRADO"
                 }
               }
@@ -1300,8 +1304,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "La sala ya est\u00e1 reservada en ese horario",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "RN-01"
                 }
               }
@@ -1348,8 +1352,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "nombre: El nombre es obligatorio",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "VALIDACION"
                 }
               }
@@ -1363,8 +1367,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_AUTENTICADO"
                 }
               }
@@ -1378,8 +1382,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "No tienes permiso para esta operaci\u00f3n",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "ACCESO_DENEGADO"
                 }
               }
@@ -1393,8 +1397,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Reserva con id 99 no existe",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_ENCONTRADO"
                 }
               }
@@ -1449,8 +1453,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "nombre: El nombre es obligatorio",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "VALIDACION"
                 }
               }
@@ -1464,8 +1468,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_AUTENTICADO"
                 }
               }
@@ -1479,8 +1483,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "No tienes permiso para esta operaci\u00f3n",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "ACCESO_DENEGADO"
                 }
               }
@@ -1494,8 +1498,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Reserva con id 99 no existe",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_ENCONTRADO"
                 }
               }
@@ -1509,8 +1513,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "La sala ya est\u00e1 reservada en ese horario",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "RN-01"
                 }
               }
@@ -1548,8 +1552,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "nombre: El nombre es obligatorio",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "VALIDACION"
                 }
               }
@@ -1563,8 +1567,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_AUTENTICADO"
                 }
               }
@@ -1578,8 +1582,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "No tienes permiso para esta operaci\u00f3n",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "ACCESO_DENEGADO"
                 }
               }
@@ -1593,8 +1597,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Reserva con id 99 no existe",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_ENCONTRADO"
                 }
               }
@@ -1608,8 +1612,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "La sala ya est\u00e1 reservada en ese horario",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "RN-01"
                 }
               }
@@ -1658,8 +1662,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "nombre: El nombre es obligatorio",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "VALIDACION"
                 }
               }
@@ -1673,8 +1677,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_AUTENTICADO"
                 }
               }
@@ -1688,8 +1692,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "No tienes permiso para esta operaci\u00f3n",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "ACCESO_DENEGADO"
                 }
               }
@@ -1703,8 +1707,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Reserva con id 99 no existe",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_ENCONTRADO"
                 }
               }
@@ -1761,8 +1765,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "nombre: El nombre es obligatorio",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "VALIDACION"
                 }
               }
@@ -1776,8 +1780,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_AUTENTICADO"
                 }
               }
@@ -1791,8 +1795,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "No tienes permiso para esta operaci\u00f3n",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "ACCESO_DENEGADO"
                 }
               }
@@ -1806,8 +1810,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Reserva con id 99 no existe",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_ENCONTRADO"
                 }
               }
@@ -1821,8 +1825,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "La sala ya est\u00e1 reservada en ese horario",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "RN-01"
                 }
               }
@@ -1862,8 +1866,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "nombre: El nombre es obligatorio",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "VALIDACION"
                 }
               }
@@ -1877,8 +1881,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_AUTENTICADO"
                 }
               }
@@ -1892,8 +1896,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "No tienes permiso para esta operaci\u00f3n",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "ACCESO_DENEGADO"
                 }
               }
@@ -1907,8 +1911,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Reserva con id 99 no existe",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_ENCONTRADO"
                 }
               }
@@ -1922,14 +1926,77 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "La sala ya est\u00e1 reservada en ese horario",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "RN-01"
                 }
               }
             }
           }
         }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "Autenticaci\u00f3n"
+        ],
+        "summary": "Iniciar sesi\u00f3n",
+        "description": "RF-11. P\u00fablico. Devuelve un JWT que vence en 60 minutos. Usuarios de prueba: admin/admin123, recepcion/recep123, ana/ana123, luis/luis123.",
+        "operationId": "login",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SolicitudLogin"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaLogin"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos faltantes o con formato inv\u00e1lido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "error": "nombre: El nombre es obligatorio",
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "codigo": "VALIDACION"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Usuario o contrase\u00f1a incorrectos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "error": "Usuario o contrase\u00f1a incorrectos",
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "codigo": "NO_AUTENTICADO"
+                }
+              }
+            }
+          }
+        },
+        "security": []
       }
     },
     "/api/servicios-adicionales": {
@@ -1962,8 +2029,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "nombre: El nombre es obligatorio",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "VALIDACION"
                 }
               }
@@ -1977,8 +2044,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_AUTENTICADO"
                 }
               }
@@ -1992,8 +2059,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "No tienes permiso para esta operaci\u00f3n",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "ACCESO_DENEGADO"
                 }
               }
@@ -2037,8 +2104,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "nombre: El nombre es obligatorio",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "VALIDACION"
                 }
               }
@@ -2052,8 +2119,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_AUTENTICADO"
                 }
               }
@@ -2067,8 +2134,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "No tienes permiso para esta operaci\u00f3n",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "ACCESO_DENEGADO"
                 }
               }
@@ -2082,8 +2149,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "La sala ya est\u00e1 reservada en ese horario",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "RN-01"
                 }
               }
@@ -2122,8 +2189,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "nombre: El nombre es obligatorio",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "VALIDACION"
                 }
               }
@@ -2137,8 +2204,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_AUTENTICADO"
                 }
               }
@@ -2152,8 +2219,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "No tienes permiso para esta operaci\u00f3n",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "ACCESO_DENEGADO"
                 }
               }
@@ -2197,8 +2264,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "nombre: El nombre es obligatorio",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "VALIDACION"
                 }
               }
@@ -2212,8 +2279,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_AUTENTICADO"
                 }
               }
@@ -2227,8 +2294,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "No tienes permiso para esta operaci\u00f3n",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "ACCESO_DENEGADO"
                 }
               }
@@ -2242,8 +2309,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "La sala ya est\u00e1 reservada en ese horario",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "RN-01"
                 }
               }
@@ -2295,8 +2362,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "nombre: El nombre es obligatorio",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "VALIDACION"
                 }
               }
@@ -2310,8 +2377,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_AUTENTICADO"
                 }
               }
@@ -2325,8 +2392,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "No tienes permiso para esta operaci\u00f3n",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "ACCESO_DENEGADO"
                 }
               }
@@ -2370,8 +2437,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "nombre: El nombre es obligatorio",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "VALIDACION"
                 }
               }
@@ -2385,8 +2452,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_AUTENTICADO"
                 }
               }
@@ -2400,8 +2467,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "No tienes permiso para esta operaci\u00f3n",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "ACCESO_DENEGADO"
                 }
               }
@@ -2415,8 +2482,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "La sala ya est\u00e1 reservada en ese horario",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "RN-01"
                 }
               }
@@ -2506,8 +2573,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "nombre: El nombre es obligatorio",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "VALIDACION"
                 }
               }
@@ -2521,8 +2588,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_AUTENTICADO"
                 }
               }
@@ -2536,8 +2603,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "No tienes permiso para esta operaci\u00f3n",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "ACCESO_DENEGADO"
                 }
               }
@@ -2581,8 +2648,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "nombre: El nombre es obligatorio",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "VALIDACION"
                 }
               }
@@ -2596,8 +2663,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_AUTENTICADO"
                 }
               }
@@ -2611,8 +2678,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "No tienes permiso para esta operaci\u00f3n",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "ACCESO_DENEGADO"
                 }
               }
@@ -2626,8 +2693,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "La sala ya est\u00e1 reservada en ese horario",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "RN-01"
                 }
               }
@@ -2684,8 +2751,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "nombre: El nombre es obligatorio",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "VALIDACION"
                 }
               }
@@ -2699,8 +2766,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_AUTENTICADO"
                 }
               }
@@ -2714,8 +2781,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "No tienes permiso para esta operaci\u00f3n",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "ACCESO_DENEGADO"
                 }
               }
@@ -2729,8 +2796,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Reserva con id 99 no existe",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_ENCONTRADO"
                 }
               }
@@ -2744,8 +2811,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "La sala ya est\u00e1 reservada en ese horario",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "RN-01"
                 }
               }
@@ -2792,8 +2859,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "nombre: El nombre es obligatorio",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "VALIDACION"
                 }
               }
@@ -2807,8 +2874,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_AUTENTICADO"
                 }
               }
@@ -2822,8 +2889,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "No tienes permiso para esta operaci\u00f3n",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "ACCESO_DENEGADO"
                 }
               }
@@ -2837,8 +2904,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Reserva con id 99 no existe",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_ENCONTRADO"
                 }
               }
@@ -2852,8 +2919,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "La sala ya est\u00e1 reservada en ese horario",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "RN-01"
                 }
               }
@@ -2900,8 +2967,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "nombre: El nombre es obligatorio",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "VALIDACION"
                 }
               }
@@ -2915,8 +2982,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_AUTENTICADO"
                 }
               }
@@ -2930,8 +2997,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "No tienes permiso para esta operaci\u00f3n",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "ACCESO_DENEGADO"
                 }
               }
@@ -2945,8 +3012,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Reserva con id 99 no existe",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_ENCONTRADO"
                 }
               }
@@ -2960,8 +3027,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "La sala ya est\u00e1 reservada en ese horario",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "RN-01"
                 }
               }
@@ -3008,8 +3075,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "nombre: El nombre es obligatorio",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "VALIDACION"
                 }
               }
@@ -3023,8 +3090,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_AUTENTICADO"
                 }
               }
@@ -3038,8 +3105,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "No tienes permiso para esta operaci\u00f3n",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "ACCESO_DENEGADO"
                 }
               }
@@ -3053,8 +3120,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Reserva con id 99 no existe",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_ENCONTRADO"
                 }
               }
@@ -3068,8 +3135,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "La sala ya est\u00e1 reservada en ese horario",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "RN-01"
                 }
               }
@@ -3108,8 +3175,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "nombre: El nombre es obligatorio",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "VALIDACION"
                 }
               }
@@ -3123,8 +3190,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_AUTENTICADO"
                 }
               }
@@ -3138,8 +3205,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "No tienes permiso para esta operaci\u00f3n",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "ACCESO_DENEGADO"
                 }
               }
@@ -3183,8 +3250,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "nombre: El nombre es obligatorio",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "VALIDACION"
                 }
               }
@@ -3198,8 +3265,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_AUTENTICADO"
                 }
               }
@@ -3213,8 +3280,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "No tienes permiso para esta operaci\u00f3n",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "ACCESO_DENEGADO"
                 }
               }
@@ -3228,8 +3295,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "La sala ya est\u00e1 reservada en ese horario",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "RN-01"
                 }
               }
@@ -3294,8 +3361,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "nombre: El nombre es obligatorio",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "VALIDACION"
                 }
               }
@@ -3309,8 +3376,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_AUTENTICADO"
                 }
               }
@@ -3324,8 +3391,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "No tienes permiso para esta operaci\u00f3n",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "ACCESO_DENEGADO"
                 }
               }
@@ -3369,8 +3436,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "nombre: El nombre es obligatorio",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "VALIDACION"
                 }
               }
@@ -3384,8 +3451,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_AUTENTICADO"
                 }
               }
@@ -3399,8 +3466,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "No tienes permiso para esta operaci\u00f3n",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "ACCESO_DENEGADO"
                 }
               }
@@ -3414,8 +3481,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "La sala ya est\u00e1 reservada en ese horario",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "RN-01"
                 }
               }
@@ -3454,8 +3521,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "nombre: El nombre es obligatorio",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "VALIDACION"
                 }
               }
@@ -3469,8 +3536,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_AUTENTICADO"
                 }
               }
@@ -3484,8 +3551,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "No tienes permiso para esta operaci\u00f3n",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "ACCESO_DENEGADO"
                 }
               }
@@ -3529,8 +3596,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "nombre: El nombre es obligatorio",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "VALIDACION"
                 }
               }
@@ -3544,8 +3611,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_AUTENTICADO"
                 }
               }
@@ -3559,8 +3626,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "No tienes permiso para esta operaci\u00f3n",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "ACCESO_DENEGADO"
                 }
               }
@@ -3574,8 +3641,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "La sala ya est\u00e1 reservada en ese horario",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "RN-01"
                 }
               }
@@ -3622,8 +3689,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "nombre: El nombre es obligatorio",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "VALIDACION"
                 }
               }
@@ -3637,8 +3704,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_AUTENTICADO"
                 }
               }
@@ -3652,8 +3719,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "No tienes permiso para esta operaci\u00f3n",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "ACCESO_DENEGADO"
                 }
               }
@@ -3667,8 +3734,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Reserva con id 99 no existe",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_ENCONTRADO"
                 }
               }
@@ -3682,8 +3749,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "La sala ya est\u00e1 reservada en ese horario",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "RN-01"
                 }
               }
@@ -3730,8 +3797,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "nombre: El nombre es obligatorio",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "VALIDACION"
                 }
               }
@@ -3745,8 +3812,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_AUTENTICADO"
                 }
               }
@@ -3760,8 +3827,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "No tienes permiso para esta operaci\u00f3n",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "ACCESO_DENEGADO"
                 }
               }
@@ -3775,8 +3842,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Reserva con id 99 no existe",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_ENCONTRADO"
                 }
               }
@@ -3790,9 +3857,76 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "La sala ya est\u00e1 reservada en ese horario",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "RN-01"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/perfil": {
+      "get": {
+        "tags": [
+          "Autenticaci\u00f3n"
+        ],
+        "summary": "Usuario actual",
+        "description": "RF-14. Cualquier usuario autenticado: usuario, rol y miembroId del token.",
+        "operationId": "perfil",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaPerfil"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos faltantes o con formato inv\u00e1lido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "error": "nombre: El nombre es obligatorio",
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "codigo": "VALIDACION"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sin token, o con un token alterado o vencido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "codigo": "NO_AUTENTICADO"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "El usuario no tiene permiso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaError"
+                },
+                "example": {
+                  "error": "No tienes permiso para esta operaci\u00f3n",
+                  "timestamp": "2030-06-03T13:00:00Z",
+                  "codigo": "ACCESO_DENEGADO"
                 }
               }
             }
@@ -3838,8 +3972,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "nombre: El nombre es obligatorio",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "VALIDACION"
                 }
               }
@@ -3853,8 +3987,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_AUTENTICADO"
                 }
               }
@@ -3868,8 +4002,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "No tienes permiso para esta operaci\u00f3n",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "ACCESO_DENEGADO"
                 }
               }
@@ -3883,8 +4017,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Reserva con id 99 no existe",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_ENCONTRADO"
                 }
               }
@@ -3941,8 +4075,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "nombre: El nombre es obligatorio",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "VALIDACION"
                 }
               }
@@ -3956,8 +4090,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_AUTENTICADO"
                 }
               }
@@ -3971,8 +4105,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "No tienes permiso para esta operaci\u00f3n",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "ACCESO_DENEGADO"
                 }
               }
@@ -3986,8 +4120,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Reserva con id 99 no existe",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_ENCONTRADO"
                 }
               }
@@ -4097,8 +4231,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "nombre: El nombre es obligatorio",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "VALIDACION"
                 }
               }
@@ -4112,8 +4246,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_AUTENTICADO"
                 }
               }
@@ -4127,8 +4261,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "No tienes permiso para esta operaci\u00f3n",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "ACCESO_DENEGADO"
                 }
               }
@@ -4177,8 +4311,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "nombre: El nombre es obligatorio",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "VALIDACION"
                 }
               }
@@ -4192,8 +4326,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Debes iniciar sesi\u00f3n con un token v\u00e1lido",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_AUTENTICADO"
                 }
               }
@@ -4207,8 +4341,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "No tienes permiso para esta operaci\u00f3n",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "ACCESO_DENEGADO"
                 }
               }
@@ -4222,8 +4356,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "Reserva con id 99 no existe",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "NO_ENCONTRADO"
                 }
               }
@@ -4237,8 +4371,8 @@
                   "$ref": "#/components/schemas/RespuestaError"
                 },
                 "example": {
-                  "timestamp": "2030-06-03T13:00:00Z",
                   "error": "La sala ya est\u00e1 reservada en ese horario",
+                  "timestamp": "2030-06-03T13:00:00Z",
                   "codigo": "RN-01"
                 }
               }
@@ -4601,6 +4735,55 @@
           "nombre"
         ]
       },
+      "SolicitudLogin": {
+        "type": "object",
+        "properties": {
+          "usuario": {
+            "type": "string",
+            "example": "admin",
+            "minLength": 1
+          },
+          "contrasena": {
+            "type": "string",
+            "example": "admin123",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "contrasena",
+          "usuario"
+        ]
+      },
+      "RespuestaLogin": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string"
+          },
+          "tipo": {
+            "type": "string"
+          },
+          "expiraEn": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "usuario": {
+            "type": "string"
+          },
+          "rol": {
+            "type": "string",
+            "enum": [
+              "ADMIN",
+              "RECEPTIONIST",
+              "MEMBER"
+            ]
+          },
+          "miembroId": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
       "ItemServicio": {
         "type": "object",
         "properties": {
@@ -4805,6 +4988,26 @@
           "planId",
           "usuario"
         ]
+      },
+      "RespuestaPerfil": {
+        "type": "object",
+        "properties": {
+          "usuario": {
+            "type": "string"
+          },
+          "rol": {
+            "type": "string",
+            "enum": [
+              "ADMIN",
+              "RECEPTIONIST",
+              "MEMBER"
+            ]
+          },
+          "miembroId": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
       },
       "RespuestaConsumo": {
         "type": "object",

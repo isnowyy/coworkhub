@@ -19,6 +19,7 @@ import org.springframework.web.method.annotation.HandlerMethodValidationExceptio
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
+import com.coworkhub.negocio.excepcion.CredencialesInvalidasException;
 import com.coworkhub.negocio.excepcion.RecursoNoEncontradoException;
 import com.coworkhub.negocio.excepcion.ReglaNegocioException;
 import com.coworkhub.negocio.excepcion.SolicitudInvalidaException;
@@ -106,7 +107,12 @@ public class ManejadorGlobalDeExcepciones {
         return responder(HttpStatus.BAD_REQUEST, e.getMessage(), "SOLICITUD_INVALIDA");
     }
 
-    // ---------------------------------------------------------------- 403
+    // ---------------------------------------------------------------- 401 y 403
+
+    @ExceptionHandler(CredencialesInvalidasException.class)
+    public ResponseEntity<RespuestaError> credencialesInvalidas(CredencialesInvalidasException e) {
+        return responder(HttpStatus.UNAUTHORIZED, e.getMessage(), "NO_AUTENTICADO");
+    }
 
     /** @PreAuthorize rechazó al usuario (rol o dueño del recurso, RN-13). */
     @ExceptionHandler(AccessDeniedException.class)
