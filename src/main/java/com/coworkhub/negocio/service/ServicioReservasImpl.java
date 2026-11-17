@@ -129,6 +129,12 @@ public class ServicioReservasImpl implements ServicioReservas {
         return reservas.findByStatusOrderByStartTimeAsc(estado);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public boolean perteneceA(Long reservaId, Long miembroId) {
+        return reservas.existsByIdAndMemberId(reservaId, miembroId);
+    }
+
     // ---------------------------------------------------------------- servicios (RF-06)
 
     @Override

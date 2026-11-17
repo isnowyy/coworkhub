@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,18 +41,21 @@ public class ControladorReservas {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Crear una reserva", description = "RF-04. ADMIN y RECEPTIONIST; un MEMBER solo a su nombre. Aplica RN-01 a RN-07 y devuelve el costo calculado.")
+    @PreAuthorize("hasAnyRole('ADMIN','RECEPTIONIST') or @permisos.esSuMiembro(#solicitud.miembroId())")
     public RespuestaReserva crear(@Valid @RequestBody SolicitudReserva solicitud) {
         return RespuestaReserva.desde(servicio.crear(solicitud));
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "Consultar una reserva", description = "RF-05. ADMIN y RECEPTIONIST; un MEMBER solo si es suya.")
+    @PreAuthorize("hasAnyRole('ADMIN','RECEPTIONIST') or @permisos.esSuReserva(#id)")
     public RespuestaReserva buscar(@PathVariable Long id) {
         return RespuestaReserva.desde(servicio.buscar(id));
     }
 
     @GetMapping
     @Operation(summary = "Listar reservas con un filtro", description = "RF-05. Exactamente un filtro: miembroId, salaId + fecha, o estado. ADMIN y RECEPTIONIST; un MEMBER solo con su propio miembroId.")
+    @PreAuthorize("hasAnyRole('ADMIN','RECEPTIONIST') or (#salaId == null and #fecha == null and #estado == null and @permisos.esSuMiembro(#miembroId))")
     public List<RespuestaReserva> listar(
             @Parameter(description = "Por miembro", example = "1") @RequestParam(required = false) Long miembroId,
             @Parameter(description = "Por sala (con fecha)", example = "1") @RequestParam(required = false) Long salaId,
@@ -62,6 +66,7 @@ public class ControladorReservas {
 
     @PostMapping("/{id}/servicios")
     @Operation(summary = "Agregar un servicio", description = "RF-06. Solo con la reserva PENDING (RN-10). Si ya estaba, suma la cantidad. Devuelve la reserva con el costo recalculado.")
+    @PreAuthorize("hasAnyRole('ADMIN','RECEPTIONIST') or @permisos.esSuReserva(#id)")
     public RespuestaReserva agregarServicio(@PathVariable Long id, @Valid @RequestBody ItemServicio item) {
         return RespuestaReserva.desde(servicio.agregarServicio(id, item));
     }
@@ -69,24 +74,28 @@ public class ControladorReservas {
     /** DELETE responde 200 sin cuerpo; el costo recalculado se ve con GET /api/reservas/{id}. */
     @DeleteMapping("/{id}/servicios/{servicioId}")
     @Operation(summary = "Quitar un servicio", description = "RF-06. Solo con la reserva PENDING (RN-10). Borra el detalle y recalcula el costo. Responde 200 sin cuerpo.")
+    @PreAuthorize("hasAnyRole('ADMIN','RECEPTIONIST') or @permisos.esSuReserva(#id)")
     public void quitarServicio(@PathVariable Long id, @PathVariable Long servicioId) {
         servicio.quitarServicio(id, servicioId);
     }
 
     @PostMapping("/{id}/confirmar")
     @Operation(summary = "Confirmar", description = "RF-07. ADMIN y RECEPTIONIST. Solo desde PENDING (RN-09).")
+    @PreAuthorize("hasAnyRole('ADMIN','RECEPTIONIST')")
     public RespuestaReserva confirmar(@PathVariable Long id) {
         return RespuestaReserva.desde(servicio.confirmar(id));
     }
 
     @PostMapping("/{id}/cancelar")
     @Operation(summary = "Cancelar", description = "RF-08. ADMIN y RECEPTIONIST; un MEMBER solo las suyas. Con 24 h o más: sin cargo. Entre 24 h y 2 h: 50 % del costo de la sala. Con menos de 2 h o ya iniciada: 409 (RN-08).")
+    @PreAuthorize("hasAnyRole('ADMIN','RECEPTIONIST') or @permisos.esSuReserva(#id)")
     public RespuestaReserva cancelar(@PathVariable Long id) {
         return RespuestaReserva.desde(servicio.cancelar(id));
     }
 
     @PostMapping("/{id}/completar")
     @Operation(summary = "Completar", description = "RF-09. ADMIN y RECEPTIONIST. Solo desde CONFIRMED (RN-09).")
+    @PreAuthorize("hasAnyRole('ADMIN','RECEPTIONIST')")
     public RespuestaReserva completar(@PathVariable Long id) {
         return RespuestaReserva.desde(servicio.completar(id));
     }

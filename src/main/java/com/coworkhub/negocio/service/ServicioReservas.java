@@ -32,4 +32,7 @@ public interface ServicioReservas {
 
     /** RF-09 y RN-09. */
     Booking completar(Long id);
+
+    /** RN-13: la reserva existe y es del miembro indicado. */
+    boolean perteneceA(Long reservaId, Long miembroId);
 }

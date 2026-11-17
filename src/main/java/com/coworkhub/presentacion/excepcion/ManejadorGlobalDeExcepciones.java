@@ -7,6 +7,7 @@ import org.springframework.dao.PessimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -103,6 +104,14 @@ public class ManejadorGlobalDeExcepciones {
     @ExceptionHandler(SolicitudInvalidaException.class)
     public ResponseEntity<RespuestaError> solicitudInvalida(SolicitudInvalidaException e) {
         return responder(HttpStatus.BAD_REQUEST, e.getMessage(), "SOLICITUD_INVALIDA");
+    }
+
+    // ---------------------------------------------------------------- 403
+
+    /** @PreAuthorize rechazó al usuario (rol o dueño del recurso, RN-13). */
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<RespuestaError> accesoDenegado(AccessDeniedException e) {
+        return responder(HttpStatus.FORBIDDEN, "No tienes permiso para esta operación", "ACCESO_DENEGADO");
     }
 
     // ---------------------------------------------------------------- 405 y 415

@@ -45,10 +45,10 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
-		<!-- Solo el codificador BCrypt. Spring Security completo llega en la fase 8. -->
+		<!-- Spring Security: autenticación, roles y BCrypt (RF-12) -->
 		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-crypto</artifactId>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
 
 		<!-- Swagger UI y documento OpenAPI (RF-13). 3.2.0 es la compatible con Spring Boot 4.1 -->
