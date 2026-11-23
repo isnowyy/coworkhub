@@ -63,9 +63,11 @@ para el frontend: Spring Boot lo sirve junto con la API.
 
 ## 5. Preparar MySQL
 
-La aplicación se conecta a la base `coworkhub` con el usuario `coworkhub` / `coworkhub`, por
-defecto en el **puerto 3307** (el 3306 suele estar ocupado por un MySQL instalado). El puerto y
-las credenciales se cambian con variables de entorno (sección 6).
+Por defecto, la aplicación usa la misma configuración del enunciado: MySQL en
+**`localhost:3306`**, base `coworkhub`, usuario `coworkhub` y contraseña `coworkhub`. Si tu MySQL
+está en otro puerto o tiene otras credenciales, no hay que tocar el código: se indican con
+variables de entorno (sección 6). Si la base no existe y el usuario tiene permiso, la aplicación
+la crea al arrancar.
 
 ### Opción A — Con Docker (recomendada)
 
@@ -75,13 +77,18 @@ docker run -d --name coworkhub-mysql \
   -e MYSQL_USER=coworkhub \
   -e MYSQL_PASSWORD=coworkhub \
   -e MYSQL_ROOT_PASSWORD=root \
-  -p 3307:3306 \
+  -p 3306:3306 \
   -v coworkhub-datos:/var/lib/mysql \
   mysql:8.4
 ```
 
 En Windows escríbelo en una sola línea, sin las `\`. La primera vez tarda unos segundos: espera
 a que `docker logs coworkhub-mysql` muestre `ready for connections`.
+
+- **Si ya tienes un contenedor `coworkhub-mysql`** (el error dice *The container name is already
+  in use*), no lo crees otra vez: inícialo con `docker start coworkhub-mysql`.
+- **Si el puerto 3306 está ocupado** (por ejemplo, por un MySQL instalado), publícalo en otro
+  puerto con `-p 3307:3306` y arranca la aplicación con `COWORKHUB_DB_PORT=3307` (sección 6).
 
 | Para… | Comando |
 |---|---|
@@ -101,7 +108,8 @@ GRANT ALL PRIVILEGES ON coworkhub.* TO 'coworkhub'@'localhost';
 FLUSH PRIVILEGES;
 ```
 
-Si tu MySQL está en el puerto 3306, arranca con `COWORKHUB_DB_PORT=3306` (sección 6).
+Si tu MySQL está en otro puerto o prefieres usar otro usuario (por ejemplo `root`), indícalo
+con las variables de la sección 6.
 
 ### Tablas y datos de prueba
 
@@ -126,16 +134,27 @@ sin tocar el código:
 
 | Variable | Por defecto | Para qué |
 |---|---|---|
-| `COWORKHUB_DB_PORT` | `3307` | Puerto de MySQL |
+| `COWORKHUB_DB_HOST` | `localhost` | Servidor de MySQL |
+| `COWORKHUB_DB_PORT` | `3306` | Puerto de MySQL |
+| `COWORKHUB_DB_NAME` | `coworkhub` | Nombre de la base (se crea si no existe) |
 | `COWORKHUB_DB_USER` | `coworkhub` | Usuario de la base |
 | `COWORKHUB_DB_PASSWORD` | `coworkhub` | Contraseña de la base |
 | `COWORKHUB_JWT_SECRETO` | clave educativa del archivo | Clave de firma de los JWT (mínimo 32 caracteres) |
+| `SERVER_PORT` | `8080` | Puerto de la aplicación, si el 8080 está ocupado |
+
+macOS o Linux:
 
 ```bash
-COWORKHUB_DB_PORT=3306 COWORKHUB_DB_PASSWORD=mi-clave mvn spring-boot:run
+COWORKHUB_DB_PORT=3307 mvn spring-boot:run
 ```
 
-En Windows (PowerShell): `$env:COWORKHUB_DB_PORT="3306"; mvn spring-boot:run`.
+Windows (PowerShell):
+
+```powershell
+$env:COWORKHUB_DB_PORT="3307"; mvn spring-boot:run
+```
+
+Windows (CMD): `set COWORKHUB_DB_PORT=3307` y después `mvn spring-boot:run`.
 
 La URL de conexión incluye `connectionTimeZone=LOCAL&forceConnectionTimeZoneToSession=true`: así
 MySQL usa la zona horaria del equipo y `CURDATE()` (que usa `import.sql`) da la misma fecha que la
@@ -188,6 +207,32 @@ mvn spring-boot:run -Dspring-boot.run.arguments=--coworkhub.reloj.fijo=08:00
 `08:00` significa **hoy a las 8:00** (las fechas de `import.sql` también son relativas a hoy).
 También acepta una fecha completa, por ejemplo `2030-06-03T08:00:00`. Sin el parámetro, usa la
 hora real.
+
+### Ejecutarlo en otro computador
+
+Lista de verificación para revisar el proyecto en un equipo nuevo:
+
+1. `java -version` muestra **21 o superior**. Maven es opcional: el proyecto trae `./mvnw`
+   (`mvnw.cmd` en Windows), que descarga Maven la primera vez. Hace falta internet la primera vez
+   para bajar las dependencias.
+2. MySQL 8 está corriendo en el puerto 3306 con la base y el usuario `coworkhub` (sección 5). Si
+   está en otro puerto o con otro usuario, usa las variables de la sección 6.
+3. El puerto 8080 está libre. Si no, arranca con `SERVER_PORT=8081` y abre <http://localhost:8081/>.
+4. Desde la carpeta del proyecto: `mvn spring-boot:run` (o `./mvnw spring-boot:run`).
+5. Abre <http://localhost:8080/> e inicia sesión con un usuario de prueba.
+
+La base se reinicia en cada arranque (`ddl-auto=create`): borra y vuelve a crear **sus** tablas
+(`locations`, `rooms`…) y carga los datos de prueba. Si en la misma base hay tablas de otro
+proyecto con esos nombres, usa una base aparte, por ejemplo con `COWORKHUB_DB_NAME=coworkhub_nicolas`
+(si el usuario no tiene permiso para crearla, créala antes como `root`).
+
+| Si aparece… | Causa | Solución |
+|---|---|---|
+| `Communications link failure` o `Connection refused` | MySQL no está corriendo o está en otro puerto | `docker start coworkhub-mysql`, o `COWORKHUB_DB_PORT` con el puerto correcto |
+| `Access denied for user 'coworkhub'` | El usuario o la contraseña no existen en ese MySQL | Créalos (sección 5, opción B) o usa `COWORKHUB_DB_USER` y `COWORKHUB_DB_PASSWORD` |
+| `Port 8080 was already in use` | Otra aplicación usa el 8080 | `SERVER_PORT=8081` |
+| `release version 21 not supported` | Java menor que 21 | Instala Java 21 o superior |
+| `No plugin found for prefix 'spring-boot'` | El comando se ejecutó fuera de la carpeta del proyecto | Entra a la carpeta donde está `pom.xml` |
 
 ## 8. Descripción de roles
 
