@@ -269,7 +269,7 @@ resultados están en `docs/resultados-pruebas.md`.
 
 - Pagos en línea, facturación y recaudo de los cargos (el sistema solo calcula montos).
 - Notificaciones por correo o mensajes.
-- Interfaz gráfica.
+- Aplicación móvil nativa (el frontend web se adapta al celular).
 - Gestión de cuentas de personal por API.
 - Recuperación de contraseña, cambio de contraseña y renovación de tokens (*refresh tokens*).
 - Reservas recurrentes y listas de espera.
@@ -289,3 +289,6 @@ resultados están en `docs/resultados-pruebas.md`.
 | Relojes | `@Primary Clock reloj` (de negocio, congelable) y `@Qualifier("relojReal") Clock` para el JWT. | Un token debe vencer en tiempo real aunque el reloj de negocio esté congelado. |
 | Configuración | `@Value` para el reloj y el JWT; `@PostConstruct` que valida el reloj fijo y el largo de la clave al arrancar. | Una configuración inválida detiene la aplicación con un mensaje claro. |
 | Datos de prueba | `import.sql` con fechas relativas a hoy (`CURDATE() + INTERVAL n DAY`) y `ddl-auto=create`. | Las reservas futuras siguen siendo futuras y cada arranque empieza con los mismos datos. |
+| Migración | `src/main/resources/migracion.sql`: el esquema que genera Hibernate más los mismos datos de `import.sql`, para preparar la base a mano. | La base se puede revisar o restaurar sin arrancar la aplicación; la aplicación sigue usando `import.sql`. |
+| Zona horaria | La URL de conexión lleva `connectionTimeZone=LOCAL&forceConnectionTimeZoneToSession=true`. | MySQL en Docker usa UTC: sin esto, entre las 19:00 y la medianoche (hora de Colombia) `CURDATE()` ya es mañana y las fechas de `import.sql` quedan corridas un día. |
+| Frontend | HTML, CSS y JavaScript sin librerías en `src/main/resources/static`, servido por el mismo Spring Boot en `/`. Módulos ES por vista (`js/vistas/*.js`) y un cliente único de la API (`js/api.js`) que envía el JWT. | Se ejecuta con el mismo `mvn spring-boot:run`, sin CORS ni instalaciones extra. Las reglas y los permisos siguen en el backend: el frontend solo oculta lo que el rol no puede hacer y muestra el error de la API. |

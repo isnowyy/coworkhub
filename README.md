@@ -1,31 +1,71 @@
 # CoWorkHub
 
-API REST con Spring Boot para una red de coworking: sedes, salas, planes de membresía,
-miembros, disponibilidad y reservas. Evita las reservas duplicadas (incluso si llegan dos a la
-vez), controla las horas que consume cada miembro, cobra las cancelaciones con una sola regla y
-limita a cada usuario a lo que le corresponde.
+Aplicación web para gestionar una red de coworking: sedes, salas, planes de membresía, miembros,
+disponibilidad y reservas. Evita las reservas duplicadas (incluso si llegan dos a la vez),
+controla las horas que consume cada miembro, cobra las cancelaciones con una sola regla y limita
+a cada usuario a lo que le corresponde según su rol.
 
-No tiene interfaz gráfica: se usa con Swagger UI, Postman/Insomnia o `curl`.
+Tiene dos partes que arrancan juntas con un solo comando:
+
+- **Backend**: API REST con Spring Boot, MySQL y seguridad JWT.
+- **Frontend**: interfaz web en HTML, CSS y JavaScript que consume esa API.
 
 | | |
 |---|---|
-| Stack | Java 21 · Spring Boot 4.1.2 · Spring Data JPA · MySQL 8 · Spring Security + JWT · springdoc-openapi · Maven |
+| Frontend | <http://localhost:8080/> |
 | Swagger UI | <http://localhost:8080/doc/swagger-ui.html> |
 | Documento OpenAPI | <http://localhost:8080/v3/api-docs> (copia en [`docs/openapi.json`](docs/openapi.json)) |
 | Salud | <http://localhost:8080/actuator/health> |
 | Análisis | [`docs/analisis.md`](docs/analisis.md): casos de uso, glosario, diagrama ER, trazabilidad y decisiones |
+| Evidencias | [`docs/evidencias/`](docs/evidencias) y [`docs/resultados-pruebas.md`](docs/resultados-pruebas.md) |
 
 ---
 
-## 1. Requisitos
+## 1. Integrantes
 
-- **Java 21** o superior y **Maven 3.9** (o el `./mvnw` incluido).
-- **MySQL 8**, instalado o con **Docker**.
+| Nombre | GitHub | Rol en el proyecto |
+|---|---|---|
+| Nicolás | [@isnowyy](https://github.com/isnowyy) | Análisis, backend, frontend y pruebas (trabajo individual) |
 
-## 2. Crear la base de datos
+## 2. Tecnologías utilizadas
+
+| Capa | Tecnología |
+|---|---|
+| Lenguaje y build | Java 21 · Maven 3.9 (incluye `./mvnw`) |
+| Framework | Spring Boot 4.1.2: Web MVC, Data JPA (Hibernate 7), Validation, Security, Actuator |
+| Base de datos | MySQL 8 con el conector `mysql-connector-j` |
+| Seguridad | Spring Security, JWT con jjwt 0.12.6 (HS512, 60 min) y contraseñas con BCrypt |
+| Documentación de la API | springdoc-openapi 3 (Swagger UI) |
+| Frontend | HTML5, CSS3 y JavaScript (módulos ES), sin librerías ni compilación |
+| Pruebas | JUnit 5 (`mvn test`), script de aceptación en Python 3 y colección de Postman/Insomnia |
+| Contenedores (opcional) | Docker para MySQL |
+
+## 3. Requisitos previos
+
+- **Java 21** o superior (`java -version`).
+- **Maven 3.9**, o el `./mvnw` incluido, que no necesita instalar Maven.
+- **MySQL 8**: instalado en el equipo o con **Docker**.
+- Un navegador moderno (Chrome, Edge, Firefox o Safari) para el frontend.
+- **Python 3**, solo para correr el script de pruebas de aceptación.
+
+## 4. Instalación
+
+```bash
+git clone https://github.com/isnowyy/coworkhub.git
+```
+
+```bash
+cd coworkhub
+```
+
+Después prepara MySQL (sección 5) y ejecuta el proyecto (sección 7). No hay que instalar nada
+para el frontend: Spring Boot lo sirve junto con la API.
+
+## 5. Preparar MySQL
 
 La aplicación se conecta a la base `coworkhub` con el usuario `coworkhub` / `coworkhub`, por
-defecto en el **puerto 3307** (el 3306 suele estar ocupado por un MySQL instalado).
+defecto en el **puerto 3307** (el 3306 suele estar ocupado por un MySQL instalado). El puerto y
+las credenciales se cambian con variables de entorno (sección 6).
 
 ### Opción A — Con Docker (recomendada)
 
@@ -61,30 +101,80 @@ GRANT ALL PRIVILEGES ON coworkhub.* TO 'coworkhub'@'localhost';
 FLUSH PRIVILEGES;
 ```
 
-Si tu MySQL está en el puerto 3306, arranca la aplicación con la variable `COWORKHUB_DB_PORT=3306`
-(ver la sección 3).
+Si tu MySQL está en el puerto 3306, arranca con `COWORKHUB_DB_PORT=3306` (sección 6).
 
-## 3. Ejecutar
+### Tablas y datos de prueba
+
+No hace falta crear las tablas: al arrancar, Hibernate las crea a partir de las entidades y
+carga [`src/main/resources/import.sql`](src/main/resources/import.sql) (`ddl-auto=create`:
+**cada arranque empieza de cero** con los mismos datos).
+
+Para preparar o revisar la base **sin arrancar la aplicación**, está
+[`src/main/resources/migracion.sql`](src/main/resources/migracion.sql): crea las 10 tablas
+(con sus claves, índices y restricciones) y carga los mismos datos de prueba.
+
+```bash
+docker exec -i coworkhub-mysql mysql -u coworkhub -pcoworkhub coworkhub < src/main/resources/migracion.sql
+```
+
+Con MySQL instalado: `mysql -u coworkhub -p coworkhub < src/main/resources/migracion.sql`.
+
+## 6. Configuración mediante variables de entorno
+
+Todo tiene un valor por defecto para que el proyecto arranque sin configurar nada. Para cambiarlo
+sin tocar el código:
+
+| Variable | Por defecto | Para qué |
+|---|---|---|
+| `COWORKHUB_DB_PORT` | `3307` | Puerto de MySQL |
+| `COWORKHUB_DB_USER` | `coworkhub` | Usuario de la base |
+| `COWORKHUB_DB_PASSWORD` | `coworkhub` | Contraseña de la base |
+| `COWORKHUB_JWT_SECRETO` | clave educativa del archivo | Clave de firma de los JWT (mínimo 32 caracteres) |
+
+```bash
+COWORKHUB_DB_PORT=3306 COWORKHUB_DB_PASSWORD=mi-clave mvn spring-boot:run
+```
+
+En Windows (PowerShell): `$env:COWORKHUB_DB_PORT="3306"; mvn spring-boot:run`.
+
+La URL de conexión incluye `connectionTimeZone=LOCAL&forceConnectionTimeZoneToSession=true`: así
+MySQL usa la zona horaria del equipo y `CURDATE()` (que usa `import.sql`) da la misma fecha que la
+aplicación, también de noche, cuando en UTC ya es el día siguiente.
+
+## 7. Ejecución del backend y del frontend
+
+### Backend y frontend (un solo comando)
+
+Con MySQL corriendo, desde la carpeta del proyecto:
 
 ```bash
 mvn spring-boot:run
 ```
 
-Al arrancar, Hibernate crea las tablas y carga los datos de prueba de
-[`src/main/resources/import.sql`](src/main/resources/import.sql) (`ddl-auto=create`: **cada
-arranque empieza de cero** con los mismos datos).
+O sin Maven instalado: `./mvnw spring-boot:run` (en Windows, `mvnw.cmd spring-boot:run`).
 
-La conexión se puede cambiar sin tocar el código, con variables de entorno:
+Cuando el log diga `Started Main`:
 
-| Variable | Por defecto | Para qué |
+1. **Frontend**: abre <http://localhost:8080/> e inicia sesión con un usuario de prueba
+   (sección 9). En la pantalla de inicio hay botones con cada usuario para entrar con un clic.
+2. **API**: <http://localhost:8080/doc/swagger-ui.html> (sección 10).
+
+El frontend está en [`src/main/resources/static`](src/main/resources/static) y Spring Boot lo
+sirve en `/`. Como la página y la API están en el mismo origen, no hace falta CORS ni otro
+servidor. Si cambias un archivo del frontend, recarga el navegador después de volver a arrancar
+(o de `mvn process-resources`).
+
+| Sección del frontend | Quién la ve | Qué hace |
 |---|---|---|
-| `COWORKHUB_DB_PORT` | `3307` | Puerto de MySQL |
-| `COWORKHUB_DB_USER` / `COWORKHUB_DB_PASSWORD` | `coworkhub` / `coworkhub` | Credenciales de la base |
-| `COWORKHUB_JWT_SECRETO` | clave educativa del archivo | Clave de firma de los JWT |
+| Inicio | Todos | Miembro: consumo del mes (horas incluidas, usadas, restantes y excedentes) y próximas reservas. Personal: resumen y reservas por confirmar |
+| Disponibilidad | Todos | Salas libres de una sede por fecha, horario, capacidad y equipamiento |
+| Nueva reserva | Todos | Crea la reserva con sus servicios y muestra el costo calculado. El personal elige el miembro |
+| Reservas | Todos | Miembro: solo las suyas. Personal: filtro por estado, miembro o sala y fecha. Detalle con servicios, cancelar, confirmar y completar |
+| Miembros | `ADMIN`, `RECEPTIONIST` | Registrar miembro y cuenta, editar, suspender, activar, eliminar y ver el consumo |
+| Catálogos | Todos (solo `ADMIN` edita) | Sedes, salas (con equipamiento), equipamiento, servicios adicionales y planes |
 
-```bash
-COWORKHUB_DB_PORT=3306 mvn spring-boot:run
-```
+Los errores de la API se muestran en un aviso con su mensaje y su código (por ejemplo,
+`HTTP 409 RN-01`). Si el token vence, el frontend vuelve a la pantalla de inicio de sesión.
 
 ### Reloj fijo (para repetir las pruebas)
 
@@ -99,7 +189,23 @@ mvn spring-boot:run -Dspring-boot.run.arguments=--coworkhub.reloj.fijo=08:00
 También acepta una fecha completa, por ejemplo `2030-06-03T08:00:00`. Sin el parámetro, usa la
 hora real.
 
-## 4. Usuarios de prueba
+## 8. Descripción de roles
+
+| Rol | Quién es | Qué puede hacer |
+|---|---|---|
+| `ADMIN` | Administrador del coworking | Todo. Es el **único** que crea, modifica o elimina catálogos (sedes, salas, equipamiento, servicios y planes) |
+| `RECEPTIONIST` | Personal de recepción | Gestiona los miembros (registrar, editar, suspender, activar, eliminar) y **todas** las reservas: crear a nombre de cualquier miembro, confirmar, cancelar y completar |
+| `MEMBER` | Cliente con un plan de membresía | Consulta catálogos y disponibilidad. Crea, ve, modifica (servicios) y cancela **solo sus** reservas, y ve **solo su** consumo. Si pide datos de otro miembro recibe `403` |
+
+Un **miembro** es el cliente que contrata un plan; su cuenta para iniciar sesión (`UserAccount`)
+es otra entidad, unida 1 a 1. El `ADMIN` y el `RECEPTIONIST` tienen cuenta, pero no son miembros:
+no tienen plan ni consumen horas. Un miembro `SUSPENDED` sigue existiendo, pero no puede reservar.
+
+Los permisos los aplica el **backend** (RN-13): por URL para la escritura de catálogos y con
+`@PreAuthorize` para el rol y el dueño de cada reserva o miembro. El frontend solo oculta las
+opciones que el rol no puede usar.
+
+## 9. Usuarios de prueba
 
 | Usuario | Contraseña | Rol | Miembro |
 |---|---|---|---|
@@ -115,14 +221,15 @@ Datos cargados: 2 sedes, 7 salas (Sala Morrorico está inactiva), 5 equipamiento
 adicionales, 3 planes, 5 miembros, 4 cuentas y 15 reservas en los cuatro estados, algunas con
 servicios.
 
-## 5. Usar la API
+## 10. Swagger y uso de la API
 
-### Con Swagger UI
+### Swagger UI
 
-1. Abre <http://localhost:8080/doc/swagger-ui.html>.
-2. En **Autenticación**, ejecuta `POST /auth/login` con `{"usuario": "admin", "contrasena": "admin123"}`.
-3. Copia el `token` de la respuesta, pulsa **Authorize** (arriba a la derecha), pégalo y acepta.
-4. Ya puedes probar cualquier endpoint. Con el selector **Select a definition** ves la API por
+**Enlace local: <http://localhost:8080/doc/swagger-ui.html>**
+
+1. En **Autenticación**, ejecuta `POST /auth/login` con `{"usuario": "admin", "contrasena": "admin123"}`.
+2. Copia el `token` de la respuesta, pulsa **Authorize** (arriba a la derecha), pégalo y acepta.
+3. Ya puedes probar cualquier endpoint. Con el selector **Select a definition** ves la API por
    áreas: autenticación, catálogos, miembros, y disponibilidad y reservas.
 
 ### Con curl
@@ -144,7 +251,7 @@ curl -s localhost:8080/api/salas?sedeId=1 -H "Authorization: Bearer $TOKEN"
 | Miembros | `GET /api/miembros?nombre=&estado=` · `GET/PUT/DELETE /api/miembros/{id}` · `POST /api/miembros` · `PATCH /api/miembros/{id}/suspender` · `PATCH /api/miembros/{id}/activar` · `GET /api/miembros/{id}/consumo?mes=yyyy-MM` |
 | Disponibilidad | `GET /api/disponibilidad?sedeId=&fecha=&horaInicio=&horaFin=` (+ `capacidadMinima`, `equipamientoIds`) |
 | Reservas | `POST /api/reservas` · `GET /api/reservas/{id}` · `GET /api/reservas?miembroId=` · `?salaId=&fecha=` · `?estado=` · `POST/DELETE /api/reservas/{id}/servicios[/{servicioId}]` · `POST /api/reservas/{id}/confirmar` · `/cancelar` · `/completar` |
-| Plataforma | `GET /actuator/health` (público) · Swagger (público) |
+| Plataforma | `GET /actuator/health` (público) · Swagger (público) · frontend en `/` (público; los datos piden token) |
 
 Todo error responde con el mismo cuerpo, donde `codigo` es la regla violada o el tipo de error:
 
@@ -161,7 +268,34 @@ Todo error responde con el mismo cuerpo, donde `codigo` es la regla violada o el
 | `404` | El recurso o la ruta no existen |
 | `409` | Se viola una regla de negocio o hay un duplicado |
 
-## 6. Pruebas
+## 11. Evidencias de funcionamiento
+
+Capturas del frontend con cada rol, tomadas con los datos de `import.sql`
+(carpeta [`docs/evidencias/`](docs/evidencias)):
+
+| # | Qué muestra | Captura |
+|---|---|---|
+| 1 | Inicio de sesión con los usuarios de prueba | [01-inicio-de-sesion.png](docs/evidencias/01-inicio-de-sesion.png) |
+| 2 | Miembro: consumo del mes y próximas reservas (RF-10) | [02-miembro-inicio-y-consumo.png](docs/evidencias/02-miembro-inicio-y-consumo.png) |
+| 3 | Disponibilidad de salas por sede y horario (RF-03) | [03-miembro-disponibilidad.png](docs/evidencias/03-miembro-disponibilidad.png) |
+| 4 | Reserva creada con 2 servicios y el costo calculado: 2 h cubiertas por el plan (RF-04, RN-07) | [04-miembro-reserva-creada-con-costo.png](docs/evidencias/04-miembro-reserva-creada-con-costo.png) |
+| 5 | La misma reserva otra vez: `409` `RN-01` (horario cruzado) | [05-error-rn01-horario-cruzado.png](docs/evidencias/05-error-rn01-horario-cruzado.png) |
+| 6 | Detalle de una reserva con servicios y cancelación (RF-06, RF-08) | [06-miembro-detalle-de-reserva.png](docs/evidencias/06-miembro-detalle-de-reserva.png) |
+| 7 | Recepción: panel con reservas por confirmar | [07-recepcion-panel.png](docs/evidencias/07-recepcion-panel.png) |
+| 8 | Recepción: reservas pendientes de todos los miembros (RF-05) | [08-recepcion-reservas-pendientes.png](docs/evidencias/08-recepcion-reservas-pendientes.png) |
+| 9 | Recepción: gestión de miembros (RF-02) | [09-recepcion-miembros.png](docs/evidencias/09-recepcion-miembros.png) |
+| 10 | Administrador: catálogo de salas con su equipamiento (RF-01) | [10-admin-catalogo-de-salas.png](docs/evidencias/10-admin-catalogo-de-salas.png) |
+| 11 | Validación: crear una sala sin nombre → `400` | [11-admin-validacion-400.png](docs/evidencias/11-admin-validacion-400.png) |
+| 12 | Frontend en el celular | [12-celular-inicio.png](docs/evidencias/12-celular-inicio.png) |
+| 13 | Swagger UI con la API documentada (RF-13) | [13-swagger-ui.png](docs/evidencias/13-swagger-ui.png) |
+
+![Reserva creada con el costo calculado](docs/evidencias/04-miembro-reserva-creada-con-costo.png)
+
+Las pruebas automáticas de la API (sección 12) dejan su resultado en
+[`docs/resultados-pruebas.md`](docs/resultados-pruebas.md): **78 de 78 pasos correctos**,
+incluidos los 14 escenarios de aceptación.
+
+## 12. Pruebas
 
 ### Escenarios de aceptación
 
@@ -179,8 +313,7 @@ En otra terminal:
 python3 pruebas/escenarios.py
 ```
 
-El último resultado está en [`docs/resultados-pruebas.md`](docs/resultados-pruebas.md)
-(78 de 78 correctos). Para volver a generarlo, agrega `--informe docs/resultados-pruebas.md`.
+Para volver a generar el informe, agrega `--informe docs/resultados-pruebas.md`.
 
 | # | Escenario | Resultado esperado |
 |---|---|---|
@@ -225,7 +358,7 @@ Con `spring.jpa.show-sql=true` (activado), cada listado emite **una sola** consu
 `join`, en vez de una por fila. Medido: `GET /api/reservas?estado=PENDING` (10 filas),
 `GET /api/salas` (7 filas) y `GET /api/miembros` (7 filas) hacen 1 consulta cada uno.
 
-## 7. Estructura
+## 13. Estructura
 
 ```text
 src/main/java/com/coworkhub
@@ -242,9 +375,23 @@ src/main/java/com/coworkhub
 │   └── excepcion/       excepciones propias
 └── persistence/
     └── repository/      repositorios Spring Data JPA
+
+src/main/resources
+├── application.properties
+├── import.sql           datos de prueba que carga Hibernate al arrancar
+├── migracion.sql        esquema completo + datos, para preparar MySQL a mano
+└── static/              frontend
+    ├── index.html       inicio de sesión y estructura de la aplicación
+    ├── css/estilos.css
+    ├── img/logo.svg
+    └── js/
+        ├── app.js       sesión, menú según el rol y navegación
+        ├── api.js       cliente de la API (JWT y errores {error, codigo})
+        ├── ui.js        formatos, avisos y ventana modal
+        └── vistas/      inicio, disponibilidad, reservas, miembros y catálogos
 ```
 
-## 8. ⚠️ Advertencia de seguridad (educativa)
+## 14. ⚠️ Advertencia de seguridad (educativa)
 
 Este repositorio es un proyecto académico. Para que arranque sin configurar nada, incluye
 valores que **nunca** deben ir en un repositorio real:
@@ -253,5 +400,9 @@ valores que **nunca** deben ir en un repositorio real:
   válidos de cualquier usuario. En producción va en la variable `COWORKHUB_JWT_SECRETO` o en un
   gestor de secretos.
 - La **contraseña de la base de datos** (`coworkhub`) y las de los usuarios de prueba. Las de
-  los usuarios están guardadas con BCrypt en `import.sql`, nunca en texto plano.
+  los usuarios están guardadas con BCrypt en `import.sql` y `migracion.sql`, nunca en texto plano.
+- Los usuarios de prueba aparecen como botones en la pantalla de inicio de sesión para facilitar
+  la revisión; en un sistema real no se mostrarían.
+- El frontend guarda el token en `sessionStorage` (se borra al cerrar la pestaña). En producción
+  conviene una cookie `HttpOnly` para que un script inyectado no pueda leerlo.
 - Todos los datos personales son **ficticios**.

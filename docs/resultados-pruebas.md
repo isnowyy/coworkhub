@@ -1,6 +1,6 @@
 # Resultados de las pruebas de aceptación
 
-Generado por `python3 pruebas/escenarios.py --informe docs/resultados-pruebas.md` el 2026-11-17, con la API arrancada con `--coworkhub.reloj.fijo=08:00` y los datos de `import.sql`.
+Generado por `python3 pruebas/escenarios.py --informe docs/resultados-pruebas.md` el 2026-11-22, con la API arrancada con `--coworkhub.reloj.fijo=08:00` y los datos de `import.sql`.
 
 
 ## 0. Sesión
