@@ -26,6 +26,11 @@ public class ConfiguracionSeguridad {
         "/auth/login", "/actuator/health", "/doc/**", "/v3/api-docs/**", "/swagger-ui/**", "/error"
     };
 
+    /** Archivos del frontend (HTML, CSS y JS en src/main/resources/static): públicos, los datos no. */
+    static final String[] FRONTEND = {
+        "/", "/index.html", "/css/**", "/js/**", "/img/**", "/favicon.ico"
+    };
+
     static final String[] CATALOGOS = {
         "/api/sedes/**", "/api/salas/**", "/api/equipamientos/**", "/api/servicios-adicionales/**", "/api/planes/**"
     };
@@ -48,6 +53,7 @@ public class ConfiguracionSeguridad {
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(a -> a
                         .requestMatchers(RUTAS_PUBLICAS).permitAll()
+                        .requestMatchers(HttpMethod.GET, FRONTEND).permitAll()
                         .requestMatchers(HttpMethod.POST, CATALOGOS).hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, CATALOGOS).hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, CATALOGOS).hasRole("ADMIN")
